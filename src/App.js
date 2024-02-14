@@ -12,8 +12,8 @@ import { Fragment, useRef, useState } from 'react';
 import { func } from 'prop-types';
 
 function App() {
+  const outerContainerRef = useRef(null);
   const aboutPageRef = useRef(null);
-  const [showAboutPage, setShowAboutPage] = useState(true);
 
   const skills = [
     'Python',
@@ -71,17 +71,17 @@ function App() {
     },
   };
 
-  function handleScrollerClick(e) {
-    // setShowAboutPage(true);
-    // const scrollingElement = document.scrollingElement || document.body;
-    // scrollingElement.scrollTop = scrollingElement.scrollHeight;
-    // console.log('CALLED');
-    window.scrollTo(0, document.body.scrollHeight);
+  function handleScrollDownClick(e) {
+    aboutPageRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function handleScrollUpClick(e) {
+    outerContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
   }
 
   return (
     <Fragment>
-      <div className="outer-container">
+      <div className="outer-container" ref={outerContainerRef}>
         <Terminal
           className="terminal"
           commands={commands}
@@ -95,7 +95,7 @@ function App() {
           inputTextStyle={config.inputTextStyle}
           messageStyle={config.messageStyle}
         ></Terminal>
-        <div class="scroll-downs" onClick={handleScrollerClick}>
+        <div class="scroll-btn" onClick={handleScrollDownClick}>
           <div class="mousey">
             <div class="scroller"></div>
           </div>
@@ -133,11 +133,13 @@ function App() {
         </div>
         <div className="description">Crafted with ❤️</div>
       </div>
-      <div
-        className={`about-page ${showAboutPage ? 'visible' : 'hidden'}`}
-        ref={aboutPageRef}
-      ></div>
-      )
+      <div className="about-page" ref={aboutPageRef}>
+        <div class="scroll-btn" onClick={handleScrollUpClick}>
+          <div class="mousey">
+            <div class="scroller"></div>
+          </div>
+        </div>
+      </div>
     </Fragment>
   );
 }
