@@ -15,7 +15,7 @@ body {
 }
 
 .terminal {
-  width: 50%;
+  width: 60%;
   height: 800px;
   margin-top: 100px;
 }
@@ -97,10 +97,31 @@ body {
   background-color: rgb(66, 63, 63);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
 }
 
 .about-page .scroll-btn {
   margin-top: 30px;
+}
+
+.about-container {
+  margin-top: 100px;
+  width: 60%;
+  height: 800px;
+  background-color: white;
+  display: flex;
+}
+
+.images-container {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  /* background: red; */
+}
+
+.content-container {
+  width: 50%;
+  height: 100%;
+  background: black;
 }

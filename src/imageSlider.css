@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+.gallery-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.slider .image {
+  width: 100%;
+  height: 400px;
+  display: none;
+}
+
+.slider .active {
+  display: block;
+  animation: fadeImg 0.8s;
+}
+
+.slider-nav {
+  display: flex;
+  margin-top: 5px;
+  width: 100%;
+  justify-content: center;
+}
+
+.slider-nav .left-arrow {
+  margin-right: 5px;
+}
+
+.slider-nav .right-arrow {
+  margin-left: 5px;
+}
+
+@keyframes fadeImg {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

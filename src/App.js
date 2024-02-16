@@ -9,7 +9,9 @@ import 'react-social-icons/stackoverflow';
 import 'react-social-icons/google';
 import 'react-social-icons/email';
 import { Fragment, useRef, useState } from 'react';
-import { func } from 'prop-types';
+import { Icon } from 'semantic-ui-react';
+
+import ImageSlider from './ImageSlider';
 
 function App() {
   const outerContainerRef = useRef(null);
@@ -138,6 +140,12 @@ function App() {
           <div class="mousey">
             <div class="scroller"></div>
           </div>
+        </div>
+        <div className="about-container">
+          <div className="images-container">
+            <ImageSlider></ImageSlider>
+          </div>
+          <div className="content-container"></div>
         </div>
       </div>
     </Fragment>
