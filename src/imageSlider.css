@@ -35,6 +35,10 @@
   margin-left: 5px;
 }
 
+.slider-nav > *:hover {
+  transform: scale(1.8);
+}
+
 @keyframes fadeImg {
   from {
     opacity: 0;

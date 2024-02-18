@@ -1,17 +1,27 @@
 export default {
-  welcomeMessage: 'Hi,there! Welcome to my page. Hope you are doing well.\n',
+  welcomeMessage:
+    'Hi,there! Welcome to my page. Hope you are doing well.\nYou can use the following commands to learn more about me.\n',
 
   contentStyle: {
-    color: 'red',
+    color: 'black',
+    fontWeight: 'bold',
+    fontFamily: 'Dejavu San',
+    fontSize: '16px',
   },
   promptLabelStyle: {
-    color: 'red',
+    color: 'black',
   },
   inputTextStyle: {
-    color: 'red',
+    color: 'black',
+    fontWeight: 'bold',
+    fontFamily: 'Fira Mono',
+    fontSize: '16px',
   },
   messageStyle: {
-    color: 'green',
-    fontWeight: 'bold',
+    margin: '3px',
+    color: 'grey',
+  },
+  terminalStyle: {
+    backgroundColor: '#413e3e',
   },
 };

@@ -43,14 +43,14 @@ const ImageSlider = () => {
       <nav className="slider-nav">
         <Icon
           className="left-arrow"
-          size="large"
-          name="left arrow"
+          size="small"
+          name="chevron left"
           onClick={handleLeftArrowClick}
         />
         <Icon
           className="right-arrow"
-          size="large"
-          name="right arrow"
+          size="small"
+          name="chevron right"
           onClick={handleRightArrowClick}
         />
       </nav>
