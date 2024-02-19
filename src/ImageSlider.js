@@ -1,6 +1,6 @@
 import React, { Fragment, useRef } from 'react';
 import { Icon } from 'semantic-ui-react';
-
+import myImage from './me.jpeg';
 import './imageSlider.css';
 import { func } from 'prop-types';
 
@@ -8,7 +8,7 @@ const ImageSlider = () => {
   const [current, setCurrent] = React.useState(0);
 
   const images = [
-    'https://source.unsplash.com/gKk9rpyDryU',
+    myImage,
     'https://source.unsplash.com/VFGEhLznjPU',
     'https://source.unsplash.com/InR-EhiO_js',
   ];

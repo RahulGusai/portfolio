@@ -1,5 +1,5 @@
 import './App.css';
-import Terminal from './Terminal';
+import Terminal from 'react-console-emulator';
 import config from './config.js';
 import { SocialIcon } from 'react-social-icons/component';
 import 'react-social-icons/linkedin';
@@ -101,41 +101,61 @@ function App() {
 
   return (
     <Fragment>
-      <Terminal></Terminal>
-      <div className="footer">
-        <div className="icons-container">
-          <SocialIcon
-            url="https://www.linkedin.com/in/rahulgusai/"
-            label="new"
-            style={{ height: 25, width: 25 }}
-            bgColor="#212121"
-          />
-          <SocialIcon
-            url="https://www.instagram.com/raahgirahul/"
-            label="new"
-            style={{ height: 25, width: 25 }}
-            bgColor="#212121"
-          />
-          <SocialIcon
-            url="https://github.com/RahulGusai"
-            style={{ height: 25, width: 25 }}
-            bgColor="#212121"
-          />
-          <SocialIcon
-            url="https://stackoverflow.com/users/6749197/rahul-gusai"
-            style={{ height: 25, width: 25 }}
-            bgColor="#212121"
-          />
-          <SocialIcon
-            url="https://drive.google.com/file/d/1F_Y8uAUUhBJojrX7wEIiyFATdyxChEgl/view"
-            style={{ height: 25, width: 25 }}
-            bgColor="#212121"
-          />
+      <div className="outer-container" ref={outerContainerRef}>
+        <Terminal
+          className="terminal"
+          commands={commands}
+          welcomeMessage={`${config.welcomeMessage}${commandNamesStr}`}
+          errorText={
+            "This command doesn't exist. Please ENTER show to list the available commands."
+          }
+          noAutoScroll={true}
+          promptLabelStyle={config.promptLabelStyle}
+          contentStyle={config.contentStyle}
+          inputTextStyle={config.inputTextStyle}
+          messageStyle={config.messageStyle}
+          style={config.terminalStyle}
+        ></Terminal>
+        <div class="scroll-btn" onClick={handleScrollDownClick}>
+          <div class="mousey">
+            <div class="scroller"></div>
+          </div>
         </div>
-        <div className="description">Crafted with ❤️</div>
+        <div className="footer">
+          <div className="icons-container">
+            <SocialIcon
+              url="https://www.linkedin.com/in/rahulgusai/"
+              label="new"
+              style={{ height: 25, width: 25 }}
+              bgColor="#212121"
+            />
+            <SocialIcon
+              url="https://www.instagram.com/raahgirahul/"
+              label="new"
+              style={{ height: 25, width: 25 }}
+              bgColor="#212121"
+            />
+            <SocialIcon
+              url="https://github.com/RahulGusai"
+              style={{ height: 25, width: 25 }}
+              bgColor="#212121"
+            />
+            <SocialIcon
+              url="https://stackoverflow.com/users/6749197/rahul-gusai"
+              style={{ height: 25, width: 25 }}
+              bgColor="#212121"
+            />
+            <SocialIcon
+              url="https://drive.google.com/file/d/1F_Y8uAUUhBJojrX7wEIiyFATdyxChEgl/view"
+              style={{ height: 25, width: 25 }}
+              bgColor="#212121"
+            />
+          </div>
+          <div className="description">Crafted with ❤️</div>
+        </div>
       </div>
 
-      {/* <div className="about-page" ref={aboutPageRef}>
+      <div className="about-page" ref={aboutPageRef}>
         <div class="scroll-btn" onClick={handleScrollUpClick}>
           <div class="mousey">
             <div class="scroller"></div>
@@ -147,7 +167,7 @@ function App() {
           </div>
           <div className="content-container"></div>
         </div>
-      </div> */}
+      </div>
     </Fragment>
   );
 }

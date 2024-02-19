@@ -3,25 +3,25 @@ export default {
     'Hi,there! Welcome to my page. Hope you are doing well.\nYou can use the following commands to learn more about me.\n',
 
   contentStyle: {
-    color: 'black',
+    color: 'green',
     fontWeight: 'bold',
     fontFamily: 'Dejavu San',
     fontSize: '16px',
   },
   promptLabelStyle: {
-    color: 'black',
+    color: 'green',
   },
   inputTextStyle: {
-    color: 'black',
+    color: 'green',
     fontWeight: 'bold',
     fontFamily: 'Fira Mono',
     fontSize: '16px',
   },
   messageStyle: {
     margin: '3px',
-    color: 'grey',
+    color: 'green',
   },
   terminalStyle: {
-    backgroundColor: '#413e3e',
+    backgroundColor: '#1b1b1c',
   },
 };
