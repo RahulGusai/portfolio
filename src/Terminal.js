@@ -1,10 +1,24 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
+import CommandProcessor from './CommandProcessor';
+import config from './config';
 import './Terminal.css';
 
 const Terminal = () => {
+  const [isTyping, setIsTyping] = useState(false);
+  const [commandSnapshots, setCommandSnapshots] = useState([]);
+  const [commandsHistory, setCommandsHistory] = useState({
+    index: 0,
+    commands: [],
+  });
+  const [promptInput, setPromptInput] = useState({});
   const welcomeMsgElem = useRef(null);
+
   const welcomeMsgCursorElem = useRef(null);
   const audioElem = useRef(null);
+  const terminalInputElem = useRef(null);
+  const currentOutputElem = useRef(null);
+
+  const commandProcessor = new CommandProcessor(terminalInputElem);
 
   const [welcomeMessageIndex, setWelcomeMessageIndex] = useState(0);
   const welcomeMessage =
@@ -12,24 +26,89 @@ const Terminal = () => {
 
   useEffect(() => {
     if (welcomeMessageIndex < welcomeMessage.length) {
+      if (!isTyping) setIsTyping(true);
+
       welcomeMsgElem.current.innerHTML +=
         welcomeMessage.charAt(welcomeMessageIndex);
       const updatedWelcomeMessageIndex = welcomeMessageIndex + 1;
       setTimeout(() => setWelcomeMessageIndex(updatedWelcomeMessageIndex), 100);
     } else {
       welcomeMsgCursorElem.current.className = 'inactive';
+
+      if (isTyping) setIsTyping(false);
+    }
+  }, [isTyping, welcomeMessageIndex]);
+
+  useEffect(() => {
+    if (isTyping) {
+      audioElem.current.play();
+    } else {
       audioElem.current.pause();
       audioElem.current.currentTime = 0;
     }
-  }, [welcomeMessageIndex]);
+  }, [isTyping]);
 
-  useEffect(() => {
-    audioElem.current.play();
-  }, []);
+  const printAnimatedOutput = (output) => {
+    if (output.length === 0) {
+      return;
+    }
+
+    const currentValue = currentOutputElem.current.innerHTML;
+
+    if (!currentValue) {
+      currentOutputElem.current.innerHTML += output[0];
+      setTimeout(() => printAnimatedOutput(output), 50);
+    } else if (currentValue.length < output.length) {
+      currentOutputElem.current.innerHTML += output[currentValue.length];
+      setTimeout(() => printAnimatedOutput(output), 50);
+    }
+  };
 
   const restartAudio = () => {
     audioElem.current.currentTime = 0;
     audioElem.current.play();
+  };
+
+  const handleKeyPressed = (event) => {
+    const keyPressed = event.key;
+
+    switch (keyPressed) {
+      case 'Enter':
+        const commandName = event.target.value;
+        const commandOutput = commandProcessor.processCommand(commandName);
+        setCommandSnapshots((commandSnapshots) => [
+          ...commandSnapshots,
+          {
+            promptLabel: config.DEFAULT_PROMPT_LABEL,
+            promptInput: commandName,
+            commandOutput: commandOutput,
+          },
+        ]);
+        const updatedCommands = [...commandsHistory.commands, commandName];
+        setCommandsHistory((commandsHistory) => ({
+          ...commandsHistory,
+          commands: updatedCommands,
+          index: updatedCommands.length - 1,
+        }));
+        //printAnimatedOutput(commandProcessor.processCommand(commandName));
+        break;
+
+      case 'ArrowUp':
+        if (commandsHistory.commands.length === 0) return;
+        terminalInputElem.current.value =
+          commandsHistory.commands[commandsHistory.index];
+        setCommandsHistory((commandsHistory) => ({
+          ...commandsHistory,
+          index:
+            commandsHistory.index - 1 >= 0
+              ? commandsHistory.index - 1
+              : commandsHistory.commands.length - 1,
+        }));
+        break;
+
+      default:
+        break;
+    }
   };
 
   return (
@@ -52,15 +131,42 @@ const Terminal = () => {
             <br></br>
           ))}
         </div>
-        <div
-          className="prompt"
-          onClick={() => {
-            audioElem.current.play();
-          }}
-        >
-          <div className="prompt-label">$</div>
-          <div className="prompt-output">rahul-portfolio:</div>
+
+        {commandSnapshots.map((commandSnapshot) => {
+          return (
+            <>
+              <div className="prompt">
+                <div className="prompt-label">
+                  {commandSnapshot.promptLabel}
+                </div>
+                <div className="prompt-input">
+                  <input
+                    disabled
+                    type="text"
+                    value={commandSnapshot.promptInput}
+                  ></input>
+                </div>
+              </div>
+              <div ref={currentOutputElem} className="current-output">
+                {commandSnapshot.commandOutput}
+              </div>
+            </>
+          );
+        })}
+
+        <div className="prompt">
+          <div className="prompt-label">$ rahul-portfolio:</div>
+          <div className="prompt-input">
+            <input
+              autoFocus
+              type="text"
+              ref={terminalInputElem}
+              onKeyDown={handleKeyPressed}
+            ></input>
+          </div>
         </div>
+
+        <div ref={currentOutputElem} className="current-output"></div>
       </div>
     </Fragment>
   );
