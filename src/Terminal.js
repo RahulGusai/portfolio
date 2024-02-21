@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState, useCallback } from 'react';
 import CommandProcessor from './CommandProcessor';
 import config from './config';
 import './Terminal.css';
@@ -10,9 +10,9 @@ const Terminal = () => {
     index: 0,
     commands: [],
   });
-  const [promptInput, setPromptInput] = useState({});
-  const welcomeMsgElem = useRef(null);
+  const [isPageLoaded, setIsPageLoaded] = useState(false);
 
+  const welcomeMsgElem = useRef(null);
   const welcomeMsgCursorElem = useRef(null);
   const audioElem = useRef(null);
   const terminalInputElem = useRef(null);
@@ -31,13 +31,17 @@ const Terminal = () => {
       welcomeMsgElem.current.innerHTML +=
         welcomeMessage.charAt(welcomeMessageIndex);
       const updatedWelcomeMessageIndex = welcomeMessageIndex + 1;
-      setTimeout(() => setWelcomeMessageIndex(updatedWelcomeMessageIndex), 100);
+      setTimeout(() => setWelcomeMessageIndex(updatedWelcomeMessageIndex), 50);
     } else {
       welcomeMsgCursorElem.current.className = 'inactive';
+      setIsPageLoaded(true);
 
-      if (isTyping) setIsTyping(false);
+      if (isTyping && !isPageLoaded) {
+        setIsTyping(false);
+      }
+      if (!isPageLoaded) setIsPageLoaded(true);
     }
-  }, [isTyping, welcomeMessageIndex]);
+  }, [isPageLoaded, isTyping, welcomeMessageIndex]);
 
   useEffect(() => {
     if (isTyping) {
@@ -48,21 +52,43 @@ const Terminal = () => {
     }
   }, [isTyping]);
 
-  const printAnimatedOutput = (output) => {
-    if (output.length === 0) {
-      return;
+  useEffect(() => {
+    if (!isPageLoaded) {
+      terminalInputElem.current.disabled = true;
+    } else {
+      terminalInputElem.current.disabled = false;
+      terminalInputElem.current.focus();
     }
+  }, [isPageLoaded]);
 
-    const currentValue = currentOutputElem.current.innerHTML;
+  const printAnimatedOutput = useCallback(
+    (output) => {
+      if (output.length === 0) {
+        return;
+      }
 
-    if (!currentValue) {
-      currentOutputElem.current.innerHTML += output[0];
-      setTimeout(() => printAnimatedOutput(output), 50);
-    } else if (currentValue.length < output.length) {
-      currentOutputElem.current.innerHTML += output[currentValue.length];
-      setTimeout(() => printAnimatedOutput(output), 50);
-    }
-  };
+      const currentValue = currentOutputElem.current.innerHTML;
+
+      if (!currentValue) {
+        currentOutputElem.current.innerHTML += output[0];
+        setTimeout(() => printAnimatedOutput(output), 50);
+      } else if (currentValue.length < output.length) {
+        currentOutputElem.current.innerHTML += output[currentValue.length];
+        setTimeout(() => printAnimatedOutput(output), 50);
+      } else {
+        setIsTyping(false);
+      }
+    },
+    [currentOutputElem]
+  );
+
+  useEffect(() => {
+    if (!currentOutputElem.current) return;
+    setIsTyping(true);
+    printAnimatedOutput(
+      commandSnapshots[commandSnapshots.length - 1].commandOutput
+    );
+  }, [commandSnapshots, printAnimatedOutput]);
 
   const restartAudio = () => {
     audioElem.current.currentTime = 0;
@@ -90,7 +116,7 @@ const Terminal = () => {
           commands: updatedCommands,
           index: updatedCommands.length - 1,
         }));
-        //printAnimatedOutput(commandProcessor.processCommand(commandName));
+
         break;
 
       case 'ArrowUp':
@@ -132,7 +158,27 @@ const Terminal = () => {
           ))}
         </div>
 
-        {commandSnapshots.map((commandSnapshot) => {
+        {commandSnapshots.map((commandSnapshot, index) => {
+          if (index === commandSnapshots.length - 1) {
+            return (
+              <>
+                <div className="prompt">
+                  <div className="prompt-label">
+                    {commandSnapshot.promptLabel}
+                  </div>
+                  <div className="prompt-input">
+                    <input
+                      disabled
+                      type="text"
+                      value={commandSnapshot.promptInput}
+                    ></input>
+                  </div>
+                </div>
+                <div ref={currentOutputElem} className="current-output"></div>
+              </>
+            );
+          }
+
           return (
             <>
               <div className="prompt">
@@ -147,7 +193,7 @@ const Terminal = () => {
                   ></input>
                 </div>
               </div>
-              <div ref={currentOutputElem} className="current-output">
+              <div className="current-output">
                 {commandSnapshot.commandOutput}
               </div>
             </>
@@ -165,8 +211,6 @@ const Terminal = () => {
             ></input>
           </div>
         </div>
-
-        <div ref={currentOutputElem} className="current-output"></div>
       </div>
     </Fragment>
   );
