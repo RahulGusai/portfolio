@@ -85,13 +85,13 @@ const Terminal = () => {
     [soundEnabled, currentOutputElem]
   );
 
-  useEffect(() => {
-    if (!currentOutputElem.current) return;
-    if (soundEnabled) setIsTyping(true);
-    printAnimatedOutput(
-      commandSnapshots[commandSnapshots.length - 1].commandOutput
-    );
-  }, [commandSnapshots, printAnimatedOutput, soundEnabled]);
+  // useEffect(() => {
+  //   if (!currentOutputElem.current) return;
+  //   if (soundEnabled) setIsTyping(true);
+  //   printAnimatedOutput(
+  //     commandSnapshots[commandSnapshots.length - 1].commandOutput
+  //   );
+  // }, [commandSnapshots, printAnimatedOutput, soundEnabled]);
 
   const restartAudio = () => {
     audioElem.current.currentTime = 0;
@@ -104,13 +104,14 @@ const Terminal = () => {
     switch (keyPressed) {
       case 'Enter':
         const commandName = event.target.value;
-        const commandOutput = commandProcessor.processCommand(commandName);
+        // TODO Take command parameters as well.
+        const command = commandProcessor.getCommandObject(commandName);
         setCommandSnapshots((commandSnapshots) => [
           ...commandSnapshots,
           {
             promptLabel: config.DEFAULT_PROMPT_LABEL,
             promptInput: commandName,
-            commandOutput: commandOutput,
+            command: command,
           },
         ]);
         const updatedCommands = [...commandsHistory.commands, commandName];
@@ -186,26 +187,29 @@ const Terminal = () => {
         </div>
 
         {commandSnapshots.map((commandSnapshot, index) => {
-          if (index === commandSnapshots.length - 1) {
-            return (
-              <>
-                <div className="prompt">
-                  <div className="prompt-label">
-                    {commandSnapshot.promptLabel}
-                  </div>
-                  <div className="prompt-input">
-                    <input
-                      disabled
-                      type="text"
-                      value={commandSnapshot.promptInput}
-                    ></input>
-                  </div>
-                </div>
-                <div ref={currentOutputElem} className="current-output"></div>
-              </>
-            );
-          }
-
+          // if (index === commandSnapshots.length - 1) {
+          //   return (
+          //     <>
+          //       <div className="prompt">
+          //         <div className="prompt-label">
+          //           {commandSnapshot.promptLabel}
+          //         </div>
+          //         <div className="prompt-input">
+          //           <input
+          //             disabled
+          //             type="text"
+          //             value={commandSnapshot.promptInput}
+          //           ></input>
+          //         </div>
+          //       </div>
+          //       <div ref={currentOutputElem} className="current-output"></div>
+          //     </>
+          //   );
+          // }
+          const currentOutputClass =
+            commandSnapshot.command.output.type === 'row'
+              ? 'current-output-row'
+              : 'current-output-column';
           return (
             <>
               <div className="prompt">
@@ -220,8 +224,10 @@ const Terminal = () => {
                   ></input>
                 </div>
               </div>
-              <div className="current-output">
-                {commandSnapshot.commandOutput}
+              <div className={currentOutputClass}>
+                {commandSnapshot.command.output.values.map((value) => {
+                  return <div className="current-output-div">{value}</div>;
+                })}
               </div>
             </>
           );

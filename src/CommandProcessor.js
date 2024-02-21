@@ -1,15 +1,25 @@
+import config from './config';
+
 class CommandProcessor {
   constructor(terminalInputElem) {
     this.terminalInputElem = terminalInputElem;
-    this.commands = {};
+    this.commands = {
+      ls: {
+        output: {
+          values: config.ls_cmd_output_value,
+          type: 'row',
+        },
+      },
+    };
   }
 
-  processCommand(commandName) {
+  getCommandObject(commandName) {
     this.terminalInputElem.current.value = '';
     if (!this.commands.hasOwnProperty(commandName)) {
-      console.log('Command not found..');
-      return 'Command not found';
+      return config.cmd_not_found;
     }
+
+    return this.commands[commandName];
   }
 }
 

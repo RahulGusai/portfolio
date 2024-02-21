@@ -85,10 +85,20 @@
   color: rgb(0, 187, 0);
 }
 
-.current-output {
+.current-output-row {
   color: rgb(0, 187, 0);
   font-size: 17px;
   font-family: 'Monoid';
+  display: flex;
+  gap: 10px;
+}
+
+.current-output-column {
+  color: rgb(0, 187, 0);
+  font-size: 17px;
+  font-family: 'Monoid';
+  display: flex;
+  flex-direction: column;
 }
 
 .footer {
