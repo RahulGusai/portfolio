@@ -8,6 +8,15 @@
   background-color: black;
 }
 
+.terminal-header {
+  display: flex;
+  justify-content: space-between;
+}
+.terminal-header .volume-icon {
+  margin-top: 7px;
+  margin-right: 7px;
+}
+
 .welcome-message {
   background-color: black;
   color: rgb(0, 187, 0);

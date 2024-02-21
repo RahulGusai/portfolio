@@ -2,6 +2,7 @@ import { Fragment, useEffect, useRef, useState, useCallback } from 'react';
 import CommandProcessor from './CommandProcessor';
 import config from './config';
 import './Terminal.css';
+import { Icon } from 'semantic-ui-react';
 
 const Terminal = () => {
   const [isTyping, setIsTyping] = useState(false);
@@ -11,10 +12,12 @@ const Terminal = () => {
     commands: [],
   });
   const [isPageLoaded, setIsPageLoaded] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
 
   const welcomeMsgElem = useRef(null);
   const welcomeMsgCursorElem = useRef(null);
   const audioElem = useRef(null);
+  const keyClickAudioElem = useRef(null);
   const terminalInputElem = useRef(null);
   const currentOutputElem = useRef(null);
 
@@ -76,19 +79,19 @@ const Terminal = () => {
         currentOutputElem.current.innerHTML += output[currentValue.length];
         setTimeout(() => printAnimatedOutput(output), 50);
       } else {
-        setIsTyping(false);
+        if (soundEnabled) setIsTyping(false);
       }
     },
-    [currentOutputElem]
+    [soundEnabled, currentOutputElem]
   );
 
   useEffect(() => {
     if (!currentOutputElem.current) return;
-    setIsTyping(true);
+    if (soundEnabled) setIsTyping(true);
     printAnimatedOutput(
       commandSnapshots[commandSnapshots.length - 1].commandOutput
     );
-  }, [commandSnapshots, printAnimatedOutput]);
+  }, [commandSnapshots, printAnimatedOutput, soundEnabled]);
 
   const restartAudio = () => {
     audioElem.current.currentTime = 0;
@@ -116,7 +119,6 @@ const Terminal = () => {
           commands: updatedCommands,
           index: updatedCommands.length - 1,
         }));
-
         break;
 
       case 'ArrowUp':
@@ -137,6 +139,15 @@ const Terminal = () => {
     }
   };
 
+  const handleVolumeIconPressed = (e) => {
+    console.log(soundEnabled);
+    if (!soundEnabled) {
+      setSoundEnabled(true);
+    } else {
+      setSoundEnabled(false);
+    }
+  };
+
   return (
     <Fragment>
       <audio
@@ -146,16 +157,32 @@ const Terminal = () => {
         src="sound.mp3"
         onEnded={restartAudio}
       ></audio>
+      <audio
+        ref={keyClickAudioElem}
+        type="audio/mp3"
+        src="click-sound.mp3"
+      ></audio>
       <div className="terminal">
-        <div className="welcome-message">
-          <pre className="welcome-message-text" ref={welcomeMsgElem}></pre>
-          <span className="cursor" ref={welcomeMsgCursorElem}>
-            {' '}
-            |
-          </span>
-          {Array.from({ length: 2 }).map(() => (
-            <br></br>
-          ))}
+        <div className="terminal-header">
+          <div className="welcome-message">
+            <pre className="welcome-message-text" ref={welcomeMsgElem}></pre>
+            <span className="cursor" ref={welcomeMsgCursorElem}>
+              {' '}
+              |
+            </span>
+            {Array.from({ length: 2 }).map(() => (
+              <br></br>
+            ))}
+          </div>
+          <div onClick={handleVolumeIconPressed}>
+            <Icon
+              className="volume-icon"
+              color="teal"
+              size="large"
+              name="volume up"
+              disabled={soundEnabled ? false : true}
+            />
+          </div>
         </div>
 
         {commandSnapshots.map((commandSnapshot, index) => {
