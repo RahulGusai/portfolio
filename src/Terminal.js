@@ -103,9 +103,16 @@ const Terminal = () => {
 
     switch (keyPressed) {
       case 'Enter':
-        const commandName = event.target.value;
-        // TODO Take command parameters as well.
+        const [commandName, commandArg] = event.target.value.split(' ');
+
+        if (commandName === 'clear') {
+          terminalInputElem.current.value = '';
+          setCommandSnapshots([]);
+          return;
+        }
+
         const command = commandProcessor.getCommandObject(commandName);
+
         setCommandSnapshots((commandSnapshots) => [
           ...commandSnapshots,
           {
@@ -207,7 +214,7 @@ const Terminal = () => {
           //   );
           // }
           const currentOutputClass =
-            commandSnapshot.command.output.type === 'row'
+            commandSnapshot.command.outputType === 'row'
               ? 'current-output-row'
               : 'current-output-column';
           return (
@@ -225,7 +232,7 @@ const Terminal = () => {
                 </div>
               </div>
               <div className={currentOutputClass}>
-                {commandSnapshot.command.output.values.map((value) => {
+                {commandSnapshot.command.handler().map((value) => {
                   return <div className="current-output-div">{value}</div>;
                 })}
               </div>

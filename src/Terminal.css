@@ -90,7 +90,7 @@
   font-size: 17px;
   font-family: 'Monoid';
   display: flex;
-  gap: 10px;
+  gap: 30px;
 }
 
 .current-output-column {

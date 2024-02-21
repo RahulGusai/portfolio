@@ -1,7 +1,7 @@
 const config = {
   DEFAULT_PROMPT_LABEL: '$ rahul-portfolio:',
 
-  ls_cmd_output_value: [
+  ls_cmd_output_values: [
     'skills',
     'resume',
     'contact-info',
@@ -9,7 +9,7 @@ const config = {
     'about',
   ],
 
-  cmd_not_found: { output: { values: ['Command not found.'], type: 'row' } },
+  default_cmd_output_values: ['Command not found.'],
 };
 
 export default config;
