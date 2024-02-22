@@ -1,17 +1,18 @@
 const config = {
-  DEFAULT_PROMPT_LABEL: '$ rahul-portfolio:',
-
-  ls_cmd_output_list: [
-    { value: 'skills' },
-    { value: 'resume' },
-    { value: 'contact-info' },
-    { value: 'projects' },
-    { value: 'about' },
-  ],
+  DEFAULT_PROMPT_LABEL: 'rahul@portfolio:',
 
   default_cmd_output_list: [{ value: 'Command not found.' }],
 
-  user_dirs: {
+  system_dirs: {
+    home: {
+      data: [
+        { value: 'skills' },
+        { value: 'resume' },
+        { value: 'contact-info' },
+        { value: 'projects' },
+        { value: 'about' },
+      ],
+    },
     skills: {
       data: [
         { value: 'Python' },

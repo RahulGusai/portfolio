@@ -1,37 +1,39 @@
 import config from './config';
 
 class CommandProcessor {
-  constructor(terminalInputElem) {
+  constructor(terminalInputElem, setDirsNavigated) {
     this.terminalInputElem = terminalInputElem;
     this.commands = {
       default: {
         description: '',
         outputType: 'row',
-        handler: function (arg) {
+        handler: function (arg, dirsNavigated) {
           return config.default_cmd_output_list;
         },
       },
       ls: {
         description: '',
         outputType: 'row',
-        handler: function (arg) {
-          return config.ls_cmd_output_list;
+        handler: function (arg, dirsNavigated) {
+          const directory =
+            dirsNavigated.length === 0
+              ? 'home'
+              : dirsNavigated[dirsNavigated.length - 1];
+
+          const { data } = config.system_dirs[directory];
+          return data;
         },
       },
 
       cd: {
         description: '',
         outputType: 'row',
-        handler: function (arg) {
-          if (!arg) {
+        handler: function (arg, dirsNavigated) {
+          if (!arg || arg in config.system_dirs || arg === '..') {
             return [];
           }
 
-          if (arg in config.user_dirs) {
-            const { data } = config.user_dirs[arg];
-            return data;
-          }
-          return [];
+          return [{ value: `cd: No such file or directory: ${arg}` }];
         },
       },
     };

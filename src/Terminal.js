@@ -13,6 +13,7 @@ const Terminal = () => {
   });
   const [isPageLoaded, setIsPageLoaded] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [dirsNavigated, setDirsNavigated] = useState([]);
 
   const welcomeMsgElem = useRef(null);
   const welcomeMsgCursorElem = useRef(null);
@@ -21,7 +22,10 @@ const Terminal = () => {
   const terminalInputElem = useRef(null);
   const currentOutputElem = useRef(null);
 
-  const commandProcessor = new CommandProcessor(terminalInputElem);
+  const commandProcessor = new CommandProcessor(
+    terminalInputElem,
+    setDirsNavigated
+  );
 
   const [welcomeMessageIndex, setWelcomeMessageIndex] = useState(0);
   const welcomeMessage =
@@ -110,9 +114,12 @@ const Terminal = () => {
           setCommandSnapshots([]);
           return;
         }
+        if (commandName === 'cd') {
+          handleDirsNavigatedStateChange(commandArg);
+        }
 
         const commandObj = commandProcessor.getCommandObject(commandName);
-        const outputList = commandObj.handler(commandArg);
+        const outputList = commandObj.handler(commandArg, dirsNavigated);
 
         setCommandSnapshots((commandSnapshots) => [
           ...commandSnapshots,
@@ -124,12 +131,14 @@ const Terminal = () => {
             command: { ...commandObj, outputList: outputList },
           },
         ]);
+
         const updatedCommands = [...commandsHistory.commands, commandName];
         setCommandsHistory((commandsHistory) => ({
           ...commandsHistory,
           commands: updatedCommands,
           index: updatedCommands.length - 1,
         }));
+
         break;
 
       case 'ArrowUp':
@@ -148,6 +157,18 @@ const Terminal = () => {
       default:
         break;
     }
+
+    function handleDirsNavigatedStateChange(commandArg) {
+      if (!commandArg) {
+        setDirsNavigated([]);
+      } else if (commandArg === '..') {
+        const updatedDirsNavigated = [...dirsNavigated];
+        updatedDirsNavigated.pop();
+        setDirsNavigated(updatedDirsNavigated);
+      } else if (commandArg in config.system_dirs) {
+        setDirsNavigated((dirsNavigated) => [...dirsNavigated, commandArg]);
+      }
+    }
   };
 
   const handleVolumeIconPressed = (e) => {
@@ -158,6 +179,9 @@ const Terminal = () => {
       setSoundEnabled(false);
     }
   };
+
+  const pathToCurrentDir =
+    dirsNavigated.length > 0 ? `~/${dirsNavigated.join('/')}` : '~';
 
   return (
     <Fragment>
@@ -259,7 +283,10 @@ const Terminal = () => {
         })}
 
         <div className="prompt">
-          <div className="prompt-label">$ rahul-portfolio:</div>
+          <div className="prompt-label">
+            {config.DEFAULT_PROMPT_LABEL}{' '}
+            <span className="current-dir">{pathToCurrentDir}</span>{' '}
+          </div>
           <div className="prompt-input">
             <input
               autoFocus
