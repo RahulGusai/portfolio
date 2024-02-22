@@ -111,14 +111,17 @@ const Terminal = () => {
           return;
         }
 
-        const command = commandProcessor.getCommandObject(commandName);
+        const commandObj = commandProcessor.getCommandObject(commandName);
+        const outputList = commandObj.handler(commandArg);
 
         setCommandSnapshots((commandSnapshots) => [
           ...commandSnapshots,
           {
             promptLabel: config.DEFAULT_PROMPT_LABEL,
-            promptInput: commandName,
-            command: command,
+            promptInput: commandArg
+              ? `${commandName} ${commandArg}`
+              : commandName,
+            command: { ...commandObj, outputList: outputList },
           },
         ]);
         const updatedCommands = [...commandsHistory.commands, commandName];
@@ -232,8 +235,23 @@ const Terminal = () => {
                 </div>
               </div>
               <div className={currentOutputClass}>
-                {commandSnapshot.command.handler().map((value) => {
-                  return <div className="current-output-div">{value}</div>;
+                {commandSnapshot.command.outputList.map((output) => {
+                  const { type, value } = output;
+                  if (!type) {
+                    return <div className="current-output-div">{value}</div>;
+                  }
+
+                  return (
+                    <div className="current-output-div">
+                      <a
+                        href={output['metaData']['address']}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <u>{value}</u>
+                      </a>
+                    </div>
+                  );
                 })}
               </div>
             </>

@@ -1,6 +1,5 @@
 import './App.css';
 import Terminal from './Terminal';
-import config from './config.js';
 import { SocialIcon } from 'react-social-icons/component';
 import 'react-social-icons/linkedin';
 import 'react-social-icons/instagram';
@@ -8,97 +7,9 @@ import 'react-social-icons/github';
 import 'react-social-icons/stackoverflow';
 import 'react-social-icons/google';
 import 'react-social-icons/email';
-import { Fragment, useRef, useState } from 'react';
-import { Icon } from 'semantic-ui-react';
-
-import ImageSlider from './ImageSlider';
+import { Fragment } from 'react';
 
 function App() {
-  const outerContainerRef = useRef(null);
-  const aboutPageRef = useRef(null);
-
-  const skills = [
-    'Python',
-    'Java',
-    'Javascript/Typescript',
-    'HTML/CSS',
-    'React.Js/Next.Js',
-    'Kubernetes',
-    'Docker',
-    'Jenkins',
-    'AWS',
-    'Technical Writing',
-    'Software Development',
-  ];
-
-  const contactInfo = {
-    'Email Id': 'rgusai97@gmail.com',
-    'Phone No': '+91-8708157414',
-    Country: 'India 🇮🇳',
-  };
-
-  const commandNames = [
-    'skills',
-    'professional-exp',
-    'projects',
-    'contact',
-    'show',
-  ];
-
-  const commandNamesStr = commandNames
-    .map((command_name, index) => {
-      return `${index + 1}. ${command_name}`;
-    })
-    .join('\n');
-
-  const commands = {
-    show: {
-      description: 'Show all the available commands',
-      fn: function () {
-        const outputStr =
-          'You can use the following commands to learn more about me.\n';
-        return `${outputStr}${commandNamesStr}`;
-      },
-    },
-    skills: {
-      description: 'Describes the skill set',
-      fn: function () {
-        return skills
-          .map((skill, index) => {
-            return `* ${skill}`;
-          })
-          .join('\n');
-      },
-    },
-    contact: {
-      description: 'Shows the contact information',
-      fn: function () {
-        let outputStr = 'I am reachable using these details \n';
-        const contactDetailsArr = [];
-        for (const key in contactInfo) {
-          contactDetailsArr.push(`${key} - ${contactInfo[key]}`);
-        }
-        return `${outputStr}${contactDetailsArr.join('\n')}`;
-      },
-    },
-    'professional-exp': {
-      description: 'Displays the professional experience',
-      fn: function () {},
-    },
-    projects: {
-      description: 'Displays the projects information',
-      fn: function () {},
-    },
-  };
-
-  function handleScrollDownClick(e) {
-    aboutPageRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }
-
-  function handleScrollUpClick(e) {
-    outerContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }
-
   return (
     <Fragment>
       <Terminal></Terminal>

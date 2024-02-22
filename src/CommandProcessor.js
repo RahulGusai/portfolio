@@ -8,14 +8,14 @@ class CommandProcessor {
         description: '',
         outputType: 'row',
         handler: function (arg) {
-          return config.default_cmd_output_values;
+          return config.default_cmd_output_list;
         },
       },
       ls: {
         description: '',
         outputType: 'row',
         handler: function (arg) {
-          return config.ls_cmd_output_values;
+          return config.ls_cmd_output_list;
         },
       },
 
@@ -27,6 +27,10 @@ class CommandProcessor {
             return [];
           }
 
+          if (arg in config.user_dirs) {
+            const { data } = config.user_dirs[arg];
+            return data;
+          }
           return [];
         },
       },
@@ -37,7 +41,7 @@ class CommandProcessor {
     this.terminalInputElem.current.value = '';
 
     if (!this.commands.hasOwnProperty(commandName)) {
-      return config.cmd_not_found;
+      return this.commands.default;
     }
 
     return this.commands[commandName];
