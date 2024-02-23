@@ -20,8 +20,6 @@ const Terminal = () => {
   const audioElem = useRef(null);
   const keyClickAudioElem = useRef(null);
   const terminalInputElem = useRef(null);
-  const currentOutputElem = useRef(null);
-
   const commandProcessor = new CommandProcessor(
     terminalInputElem,
     setDirsNavigated
@@ -68,34 +66,43 @@ const Terminal = () => {
     }
   }, [isPageLoaded]);
 
-  const printAnimatedOutput = useCallback(
-    (output) => {
-      if (output.length === 0) {
-        return;
-      }
+  const printAnimatedOutput = useCallback((animatedDiv, output) => {
+    if (output.length === 0) {
+      return;
+    }
 
-      const currentValue = currentOutputElem.current.innerHTML;
+    const currentValue = animatedDiv.innerHTML;
 
-      if (!currentValue) {
-        currentOutputElem.current.innerHTML += output[0];
-        setTimeout(() => printAnimatedOutput(output), 50);
-      } else if (currentValue.length < output.length) {
-        currentOutputElem.current.innerHTML += output[currentValue.length];
-        setTimeout(() => printAnimatedOutput(output), 50);
-      } else {
-        if (soundEnabled) setIsTyping(false);
-      }
-    },
-    [soundEnabled, currentOutputElem]
-  );
+    if (!currentValue) {
+      animatedDiv.innerHTML += output[0];
+      setTimeout(() => printAnimatedOutput(animatedDiv, output), 50);
+    } else if (currentValue.length < output.length) {
+      animatedDiv.innerHTML += output[currentValue.length];
+      setTimeout(() => printAnimatedOutput(animatedDiv, output), 50);
+    }
+  }, []);
 
-  // useEffect(() => {
-  //   if (!currentOutputElem.current) return;
-  //   if (soundEnabled) setIsTyping(true);
-  //   printAnimatedOutput(
-  //     commandSnapshots[commandSnapshots.length - 1].commandOutput
-  //   );
-  // }, [commandSnapshots, printAnimatedOutput, soundEnabled]);
+  useEffect(() => {
+    const currentOutputAnimatedDivs = document.querySelectorAll(
+      '.current-output-div-animated'
+    );
+
+    if (currentOutputAnimatedDivs.length === 0) return;
+    // if (soundEnabled) setIsTyping(true);
+
+    let delay = 0;
+    currentOutputAnimatedDivs.forEach((currentOutputAnimatedDiv, index) => {
+      setTimeout(() => {
+        printAnimatedOutput(
+          currentOutputAnimatedDiv,
+          commandSnapshots[commandSnapshots.length - 1].command.outputList[
+            index
+          ].value
+        );
+      }, delay);
+      delay += 200;
+    });
+  }, [commandSnapshots, printAnimatedOutput, soundEnabled]);
 
   const restartAudio = () => {
     audioElem.current.currentTime = 0;
@@ -159,13 +166,20 @@ const Terminal = () => {
     }
 
     function handleDirsNavigatedStateChange(commandArg) {
+      const currentDir =
+        dirsNavigated.length === 0
+          ? 'home'
+          : dirsNavigated[dirsNavigated.length - 1];
+      const dirsInCurrentDir = config.system_dirs[currentDir].directories;
+
       if (!commandArg) {
         setDirsNavigated([]);
       } else if (commandArg === '..') {
         const updatedDirsNavigated = [...dirsNavigated];
         updatedDirsNavigated.pop();
         setDirsNavigated(updatedDirsNavigated);
-      } else if (commandArg in config.system_dirs) {
+      } else if (dirsInCurrentDir.includes(commandArg)) {
+        console.log('state change');
         setDirsNavigated((dirsNavigated) => [...dirsNavigated, commandArg]);
       }
     }
@@ -221,29 +235,34 @@ const Terminal = () => {
         </div>
 
         {commandSnapshots.map((commandSnapshot, index) => {
-          // if (index === commandSnapshots.length - 1) {
-          //   return (
-          //     <>
-          //       <div className="prompt">
-          //         <div className="prompt-label">
-          //           {commandSnapshot.promptLabel}
-          //         </div>
-          //         <div className="prompt-input">
-          //           <input
-          //             disabled
-          //             type="text"
-          //             value={commandSnapshot.promptInput}
-          //           ></input>
-          //         </div>
-          //       </div>
-          //       <div ref={currentOutputElem} className="current-output"></div>
-          //     </>
-          //   );
-          // }
           const currentOutputClass =
             commandSnapshot.command.outputType === 'row'
               ? 'current-output-row'
               : 'current-output-column';
+
+          if (index === commandSnapshots.length - 1) {
+            return (
+              <>
+                <div className="prompt">
+                  <div className="prompt-label">
+                    {commandSnapshot.promptLabel}
+                  </div>
+                  <div className="prompt-input">
+                    <input
+                      disabled
+                      type="text"
+                      value={commandSnapshot.promptInput}
+                    ></input>
+                  </div>
+                </div>
+                <div className={currentOutputClass}>
+                  {commandSnapshot.command.outputList.map((output) => {
+                    return <div className="current-output-div-animated"></div>;
+                  })}
+                </div>
+              </>
+            );
+          }
           return (
             <>
               <div className="prompt">

@@ -14,7 +14,7 @@ class CommandProcessor {
       ls: {
         description: 'Lists all the files in the present directory',
         outputType: 'row',
-        handler: function (arg, dirsNavigated) {
+        handler: function (commandArg, dirsNavigated) {
           const directory =
             dirsNavigated.length === 0
               ? 'home'
@@ -28,19 +28,28 @@ class CommandProcessor {
       cd: {
         description: 'Change the current directory',
         outputType: 'row',
-        handler: function (arg, dirsNavigated) {
-          if (!arg || arg in config.system_dirs || arg === '..') {
+        handler: function (commandArg, dirsNavigated) {
+          const currentDir =
+            dirsNavigated.length === 0
+              ? 'home'
+              : dirsNavigated[dirsNavigated.length - 1];
+          const dirsInCurrentDir = config.system_dirs[currentDir].directories;
+          if (
+            !commandArg ||
+            dirsInCurrentDir.includes(commandArg) ||
+            commandArg === '..'
+          ) {
             return [];
           }
 
-          return [{ value: `cd: No such file or directory: ${arg}` }];
+          return [{ value: `cd: No such file or directory: ${commandArg}` }];
         },
       },
 
       pwd: {
         description: 'Print the path to the current working directory.',
         outputType: 'row',
-        handler: function (aeg, dirsNavigated) {
+        handler: function (commandArg, dirsNavigated) {
           const pwdStr =
             dirsNavigated.length === 0
               ? '/home'

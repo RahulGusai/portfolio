@@ -5,6 +5,7 @@ const config = {
 
   system_dirs: {
     home: {
+      directories: ['skills', 'resume'],
       data: [
         { value: 'skills' },
         { value: 'resume' },
@@ -14,6 +15,7 @@ const config = {
       ],
     },
     skills: {
+      directories: [],
       data: [
         { value: 'Python' },
         { value: 'Java' },
@@ -29,6 +31,7 @@ const config = {
       ],
     },
     resume: {
+      directories: [],
       data: [
         {
           value: 'demo-link',
