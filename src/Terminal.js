@@ -2,6 +2,7 @@ import { Fragment, useEffect, useRef, useState, useCallback } from 'react';
 import CommandProcessor from './CommandProcessor';
 import config from './config';
 import './Terminal.css';
+import ImageSlider from './ImageSlider';
 import { Icon } from 'semantic-ui-react';
 
 const Terminal = () => {
@@ -14,15 +15,17 @@ const Terminal = () => {
   const [isPageLoaded, setIsPageLoaded] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [dirsNavigated, setDirsNavigated] = useState([]);
+  const [autoCompleteOutput, setAutoCompleteOutput] = useState(null);
 
   const welcomeMsgElem = useRef(null);
   const welcomeMsgCursorElem = useRef(null);
   const audioElem = useRef(null);
-  const keyClickAudioElem = useRef(null);
   const terminalInputElem = useRef(null);
+  const terminalContainerElem = useRef(null);
+
   const commandProcessor = new CommandProcessor(
     terminalInputElem,
-    setDirsNavigated
+    setAutoCompleteOutput
   );
 
   const [welcomeMessageIndex, setWelcomeMessageIndex] = useState(0);
@@ -83,30 +86,52 @@ const Terminal = () => {
   }, []);
 
   useEffect(() => {
-    const currentOutputAnimatedDivs = document.querySelectorAll(
-      '.current-output-div-animated'
-    );
+    scrollToBottom();
+  });
 
-    if (currentOutputAnimatedDivs.length === 0) return;
-    // if (soundEnabled) setIsTyping(true);
+  // useEffect(() => {
+  //   const currentOutputAnimatedDivs = document.querySelectorAll(
+  //     '.current-output-div-animated'
+  //   );
 
-    let delay = 0;
-    currentOutputAnimatedDivs.forEach((currentOutputAnimatedDiv, index) => {
-      setTimeout(() => {
-        printAnimatedOutput(
-          currentOutputAnimatedDiv,
-          commandSnapshots[commandSnapshots.length - 1].command.outputList[
-            index
-          ].value
-        );
-      }, delay);
-      delay += 200;
-    });
-  }, [commandSnapshots, printAnimatedOutput, soundEnabled]);
+  //   if (currentOutputAnimatedDivs.length === 0) return;
+  //   // if (soundEnabled) setIsTyping(true);
+
+  //   let delay = 0;
+  //   currentOutputAnimatedDivs.forEach((animatedDiv, index) => {
+  //     setTimeout(() => {
+  //       const output =
+  //         commandSnapshots[commandSnapshots.length - 1].command.outputList[
+  //           index
+  //         ];
+  //       if (output.hasOwnProperty('type')) {
+  //         animatedDiv.innerHTML = `<a href=${output['metaData']['address']} target="_blank" rel="noreferrer"> <u>${output.value}</u></a>`;
+  //         return;
+  //       }
+  //       printAnimatedOutput(animatedDiv, output.value);
+  //     }, delay);
+  //     delay += 200;
+  //   });
+  // }, [commandSnapshots, printAnimatedOutput, soundEnabled]);
 
   const restartAudio = () => {
     audioElem.current.currentTime = 0;
     audioElem.current.play();
+  };
+
+  const clearAnimatedDivs = () => {
+    const currentOutputAnimatedDivs = document.querySelectorAll(
+      '.current-output-div-animated'
+    );
+
+    currentOutputAnimatedDivs.forEach((animatedDiv) => {
+      animatedDiv.innerHTML = '';
+    });
+  };
+
+  const scrollToBottom = () => {
+    terminalContainerElem.current.scrollTop =
+      terminalContainerElem.current.scrollHeight;
   };
 
   const handleKeyPressed = (event) => {
@@ -114,6 +139,9 @@ const Terminal = () => {
 
     switch (keyPressed) {
       case 'Enter':
+        clearAnimatedDivs();
+        setAutoCompleteOutput(null);
+
         const [commandName, commandArg] = event.target.value.split(' ');
 
         if (commandName === 'clear') {
@@ -126,20 +154,26 @@ const Terminal = () => {
         }
 
         const commandObj = commandProcessor.getCommandObject(commandName);
-        const outputList = commandObj.handler(commandArg, dirsNavigated);
+        const output = commandObj.handler(commandArg, dirsNavigated);
+        const pathToCurrentDir =
+          dirsNavigated.length > 0 ? `~/${dirsNavigated.join('/')}` : '~';
 
         setCommandSnapshots((commandSnapshots) => [
           ...commandSnapshots,
           {
             promptLabel: config.DEFAULT_PROMPT_LABEL,
+            pathToCurrentDir: pathToCurrentDir,
             promptInput: commandArg
               ? `${commandName} ${commandArg}`
               : commandName,
-            command: { ...commandObj, outputList: outputList },
+            command: { ...commandObj, output: output },
           },
         ]);
 
-        const updatedCommands = [...commandsHistory.commands, commandName];
+        const updatedCommands = [
+          ...commandsHistory.commands,
+          commandArg ? `${commandName} ${commandArg}` : commandName,
+        ];
         setCommandsHistory((commandsHistory) => ({
           ...commandsHistory,
           commands: updatedCommands,
@@ -150,8 +184,11 @@ const Terminal = () => {
 
       case 'ArrowUp':
         if (commandsHistory.commands.length === 0) return;
-        terminalInputElem.current.value =
-          commandsHistory.commands[commandsHistory.index];
+        terminalInputElem.current.focus();
+        const value = commandsHistory.commands[commandsHistory.index]; // Get the new value
+        terminalInputElem.current.value = value;
+        terminalInputElem.current.setSelectionRange(value.length, value.length);
+
         setCommandsHistory((commandsHistory) => ({
           ...commandsHistory,
           index:
@@ -159,6 +196,11 @@ const Terminal = () => {
               ? commandsHistory.index - 1
               : commandsHistory.commands.length - 1,
         }));
+        break;
+
+      case 'Tab':
+        event.preventDefault();
+        commandProcessor.handleCommandAutoComplete(dirsNavigated);
         break;
 
       default:
@@ -179,7 +221,6 @@ const Terminal = () => {
         updatedDirsNavigated.pop();
         setDirsNavigated(updatedDirsNavigated);
       } else if (dirsInCurrentDir.includes(commandArg)) {
-        console.log('state change');
         setDirsNavigated((dirsNavigated) => [...dirsNavigated, commandArg]);
       }
     }
@@ -206,12 +247,7 @@ const Terminal = () => {
         src="sound.mp3"
         onEnded={restartAudio}
       ></audio>
-      <audio
-        ref={keyClickAudioElem}
-        type="audio/mp3"
-        src="click-sound.mp3"
-      ></audio>
-      <div className="terminal">
+      <div className="terminal" ref={terminalContainerElem}>
         <div className="terminal-header">
           <div className="welcome-message">
             <pre className="welcome-message-text" ref={welcomeMsgElem}></pre>
@@ -236,38 +272,44 @@ const Terminal = () => {
 
         {commandSnapshots.map((commandSnapshot, index) => {
           const currentOutputClass =
-            commandSnapshot.command.outputType === 'row'
+            commandSnapshot.command.output.type === 'row'
               ? 'current-output-row'
               : 'current-output-column';
 
-          if (index === commandSnapshots.length - 1) {
-            return (
-              <>
-                <div className="prompt">
-                  <div className="prompt-label">
-                    {commandSnapshot.promptLabel}
-                  </div>
-                  <div className="prompt-input">
-                    <input
-                      disabled
-                      type="text"
-                      value={commandSnapshot.promptInput}
-                    ></input>
-                  </div>
-                </div>
-                <div className={currentOutputClass}>
-                  {commandSnapshot.command.outputList.map((output) => {
-                    return <div className="current-output-div-animated"></div>;
-                  })}
-                </div>
-              </>
-            );
-          }
+          // if (index === commandSnapshots.length - 1) {
+          //   return (
+          //     <>
+          //       <div className="prompt">
+          //         <div className="prompt-label">
+          //           {commandSnapshot.promptLabel}
+          //           <span className="current-dir">
+          //             {commandSnapshot.pathToCurrentDir}
+          //           </span>
+          //         </div>
+          //         <div className="prompt-input">
+          //           <input
+          //             disabled
+          //             type="text"
+          //             value={commandSnapshot.promptInput}
+          //           ></input>
+          //         </div>
+          //       </div>
+          //       <div className={currentOutputClass}>
+          //         {commandSnapshot.command.outputList.map((output) => {
+          //           return <div className="current-output-div-animated"></div>;
+          //         })}
+          //       </div>
+          //     </>
+          //   );
+          // }
           return (
             <>
               <div className="prompt">
                 <div className="prompt-label">
                   {commandSnapshot.promptLabel}
+                  <span className="current-dir">
+                    {commandSnapshot.pathToCurrentDir}
+                  </span>
                 </div>
                 <div className="prompt-input">
                   <input
@@ -278,23 +320,80 @@ const Terminal = () => {
                 </div>
               </div>
               <div className={currentOutputClass}>
-                {commandSnapshot.command.outputList.map((output) => {
-                  const { type, value } = output;
+                {commandSnapshot.command.output.data.map((dataObject) => {
+                  const { type, value, metaData } = dataObject;
                   if (!type) {
                     return <div className="current-output-div">{value}</div>;
                   }
 
+                  if (type === 'meter') {
+                    return (
+                      <div className="current-output-meter-div">
+                        <div className="current-output-div-text">{value}</div>
+                        <div className="meter-container">
+                          {Array.from(
+                            { length: metaData.value },
+                            (_, i) => i + 1
+                          ).map(() => (
+                            <div className="box fill"></div>
+                          ))}
+                          {Array.from(
+                            { length: metaData.total - metaData.value },
+                            (_, i) => i + 1
+                          ).map(() => (
+                            <div className="box"></div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (type === 'link') {
+                    return (
+                      <div className="current-output-div">
+                        <a
+                          href={dataObject['metaData']['address']}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <u>{value}</u>
+                        </a>
+                      </div>
+                    );
+                  }
+
+                  if (type === 'card') {
+                    return (
+                      <div className="current-output-div">
+                        <div className="contact-card">
+                          {metaData.keys.map((key, index) => {
+                            return (
+                              <div className="contact-card-data">
+                                <span>
+                                  <b>{`${key}: `}</b>
+                                </span>
+                                <span>{metaData.values[index]}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  // if (type === 'about-section') {
                   return (
-                    <div className="current-output-div">
-                      <a
-                        href={output['metaData']['address']}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <u>{value}</u>
-                      </a>
+                    <div className="about-section">
+                      <div
+                        className="text"
+                        dangerouslySetInnerHTML={{ __html: value }}
+                      ></div>
+                      <div className="images-container">
+                        <ImageSlider></ImageSlider>
+                      </div>
                     </div>
                   );
+                  // }
                 })}
               </div>
             </>
@@ -303,8 +402,8 @@ const Terminal = () => {
 
         <div className="prompt">
           <div className="prompt-label">
-            {config.DEFAULT_PROMPT_LABEL}{' '}
-            <span className="current-dir">{pathToCurrentDir}</span>{' '}
+            {config.DEFAULT_PROMPT_LABEL}
+            <span className="current-dir">{pathToCurrentDir}</span>
           </div>
           <div className="prompt-input">
             <input
@@ -315,6 +414,15 @@ const Terminal = () => {
             ></input>
           </div>
         </div>
+
+        {autoCompleteOutput && (
+          <div className="current-output-row">
+            {autoCompleteOutput.data.map((dataObject) => {
+              const { type, value, metaData } = dataObject;
+              return <div className="current-output-div">{value}</div>;
+            })}
+          </div>
+        )}
       </div>
     </Fragment>
   );
