@@ -1,4 +1,4 @@
-import './App.css';
+import './Terminal.css';
 import Terminal from './Terminal';
 import { SocialIcon } from 'react-social-icons/component';
 import 'react-social-icons/linkedin';
@@ -11,7 +11,7 @@ import { Fragment } from 'react';
 
 function App() {
   return (
-    <Fragment>
+    <div className="outer-container">
       <Terminal></Terminal>
       <div className="footer">
         <div className="icons-container">
@@ -59,7 +59,7 @@ function App() {
           <div className="content-container"></div>
         </div>
       </div> */}
-    </Fragment>
+    </div>
   );
 }
 

@@ -25,6 +25,7 @@ const Terminal = () => {
 
   const commandProcessor = new CommandProcessor(
     terminalInputElem,
+    setDirsNavigated,
     setAutoCompleteOutput
   );
 
@@ -149,9 +150,6 @@ const Terminal = () => {
           setCommandSnapshots([]);
           return;
         }
-        if (commandName === 'cd') {
-          handleDirsNavigatedStateChange(commandArg);
-        }
 
         const commandObj = commandProcessor.getCommandObject(commandName);
         const output = commandObj.handler(commandArg, dirsNavigated);
@@ -205,24 +203,6 @@ const Terminal = () => {
 
       default:
         break;
-    }
-
-    function handleDirsNavigatedStateChange(commandArg) {
-      const currentDir =
-        dirsNavigated.length === 0
-          ? 'home'
-          : dirsNavigated[dirsNavigated.length - 1];
-      const dirsInCurrentDir = config.system_dirs[currentDir].directories;
-
-      if (!commandArg) {
-        setDirsNavigated([]);
-      } else if (commandArg === '..') {
-        const updatedDirsNavigated = [...dirsNavigated];
-        updatedDirsNavigated.pop();
-        setDirsNavigated(updatedDirsNavigated);
-      } else if (dirsInCurrentDir.includes(commandArg)) {
-        setDirsNavigated((dirsNavigated) => [...dirsNavigated, commandArg]);
-      }
     }
   };
 

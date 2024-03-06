@@ -1,8 +1,10 @@
+import { Breadcrumb } from 'semantic-ui-react';
 import config from './config';
 
 class CommandProcessor {
-  constructor(terminalInputElem, setAutoCompleteOutput) {
+  constructor(terminalInputElem, setDirsNavigated, setAutoCompleteOutput) {
     this.terminalInputElem = terminalInputElem;
+    this.setDirsNavigated = setDirsNavigated;
     this.setAutoCompleteOutput = setAutoCompleteOutput;
     this.commands = {
       emptyCommand: {
@@ -66,33 +68,46 @@ class CommandProcessor {
       cd: {
         description: 'Change the current directory',
         handler: function (commandArg, dirsNavigated) {
-          const currentDir =
-            dirsNavigated.length === 0
-              ? 'home'
-              : dirsNavigated[dirsNavigated.length - 1];
-          const dirsInCurrentDir = config.system_dirs[currentDir].directories;
-          if (
-            !commandArg ||
-            dirsInCurrentDir.includes(commandArg) ||
-            commandArg === '..'
-          ) {
+          if (!commandArg) {
+            this.setDirsNavigated([]);
             return config.cmd_output_with_no_data;
           }
 
-          const { output } = config.system_dirs[currentDir];
-          for (const dataObject of output.data) {
-            if (commandArg === dataObject.value) {
-              return {
-                data: [{ value: `cd: Not a directory: ${commandArg}` }],
-                type: 'row',
-              };
+          const cmdArgDirectories = commandArg.split('/');
+          console.log(cmdArgDirectories);
+
+          for (const dir of cmdArgDirectories) {
+            const currentDir =
+              dirsNavigated.length === 0
+                ? 'home'
+                : dirsNavigated[dirsNavigated.length - 1];
+            const dirsInCurrentDir = config.system_dirs[currentDir].directories;
+
+            switch (dir) {
+              case '':
+                break;
+              case '.':
+                break;
+              case '..':
+                const updatedDirsNavigated = [...dirsNavigated];
+                updatedDirsNavigated.pop();
+                this.setDirsNavigated(updatedDirsNavigated);
+                break;
+              default:
+                if (dirsInCurrentDir.includes(dir)) {
+                  this.setDirsNavigated((dirsNavigated) => [
+                    ...dirsNavigated,
+                    dir,
+                  ]);
+                  break;
+                }
+                return {
+                  data: [{ value: 'cd: No such file or directory' }],
+                  type: 'row',
+                };
             }
           }
-
-          return {
-            data: [{ value: `cd: No such file or directory: ${commandArg}` }],
-            type: 'row',
-          };
+          return config.cmd_output_with_no_data;
         },
         autoCompleteHandler: function (commandArg, dirsNavigated) {
           const currentDir =
@@ -138,6 +153,7 @@ class CommandProcessor {
       },
     };
     this.commands.help.handler = this.createHelpCmdOutput.bind(this);
+    this.commands.cd.handler = this.commands.cd.handler.bind(this);
   }
 
   handleCommandAutoComplete = (dirsNavigated) => {
@@ -179,6 +195,45 @@ class CommandProcessor {
       this.setAutoCompleteOutput({ data: autoCompleteOutput, type: 'row' });
     }
   };
+
+  handleDirsNavigatedStateChange(commandArg, dirsNavigated) {
+    if (!commandArg) {
+      this.setDirsNavigated([]);
+      return;
+    }
+
+    const cmdArgDirectories = commandArg.split('/');
+    console.log(cmdArgDirectories);
+
+    for (const dir of cmdArgDirectories) {
+      const currentDir =
+        dirsNavigated.length === 0
+          ? 'home'
+          : dirsNavigated[dirsNavigated.length - 1];
+      const dirsInCurrentDir = config.system_dirs[currentDir].directories;
+
+      switch (dir) {
+        case '':
+          break;
+        case '.':
+          break;
+        case '..':
+          const updatedDirsNavigated = [...dirsNavigated];
+          updatedDirsNavigated.pop();
+          this.setDirsNavigated(updatedDirsNavigated);
+          break;
+        default:
+          if (dirsInCurrentDir.includes(dir)) {
+            this.setDirsNavigated((dirsNavigated) => [...dirsNavigated, dir]);
+            break;
+          }
+          return {
+            data: [{ value: 'cd: No such file or directory' }],
+            type: 'row',
+          };
+      }
+    }
+  }
 
   createHelpCmdOutput(commandArg, dirsNavigated) {
     if (commandArg) {
