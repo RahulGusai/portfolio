@@ -183,7 +183,7 @@ const Terminal = () => {
       case 'ArrowUp':
         if (commandsHistory.commands.length === 0) return;
         terminalInputElem.current.focus();
-        const value = commandsHistory.commands[commandsHistory.index]; // Get the new value
+        const value = commandsHistory.commands[commandsHistory.index];
         terminalInputElem.current.value = value;
         terminalInputElem.current.setSelectionRange(value.length, value.length);
 
@@ -207,7 +207,6 @@ const Terminal = () => {
   };
 
   const handleVolumeIconPressed = (e) => {
-    console.log(soundEnabled);
     if (!soundEnabled) {
       setSoundEnabled(true);
     } else {
@@ -256,32 +255,6 @@ const Terminal = () => {
               ? 'current-output-row'
               : 'current-output-column';
 
-          // if (index === commandSnapshots.length - 1) {
-          //   return (
-          //     <>
-          //       <div className="prompt">
-          //         <div className="prompt-label">
-          //           {commandSnapshot.promptLabel}
-          //           <span className="current-dir">
-          //             {commandSnapshot.pathToCurrentDir}
-          //           </span>
-          //         </div>
-          //         <div className="prompt-input">
-          //           <input
-          //             disabled
-          //             type="text"
-          //             value={commandSnapshot.promptInput}
-          //           ></input>
-          //         </div>
-          //       </div>
-          //       <div className={currentOutputClass}>
-          //         {commandSnapshot.command.outputList.map((output) => {
-          //           return <div className="current-output-div-animated"></div>;
-          //         })}
-          //       </div>
-          //     </>
-          //   );
-          // }
           return (
             <>
               <div className="prompt">
@@ -302,9 +275,6 @@ const Terminal = () => {
               <div className={currentOutputClass}>
                 {commandSnapshot.command.output.data.map((dataObject) => {
                   const { type, value, metaData } = dataObject;
-                  if (!type) {
-                    return <div className="current-output-div">{value}</div>;
-                  }
 
                   if (type === 'meter') {
                     return (
@@ -361,19 +331,21 @@ const Terminal = () => {
                     );
                   }
 
-                  // if (type === 'about-section') {
-                  return (
-                    <div className="about-section">
-                      <div
-                        className="text"
-                        dangerouslySetInnerHTML={{ __html: value }}
-                      ></div>
-                      <div className="images-container">
-                        <ImageSlider></ImageSlider>
+                  if (type === 'about-section') {
+                    return (
+                      <div className="about-section">
+                        <div
+                          className="text"
+                          dangerouslySetInnerHTML={{ __html: value }}
+                        ></div>
+                        <div className="images-container">
+                          <ImageSlider></ImageSlider>
+                        </div>
                       </div>
-                    </div>
-                  );
-                  // }
+                    );
+                  }
+
+                  return <div className="current-output-div">{value}</div>;
                 })}
               </div>
             </>

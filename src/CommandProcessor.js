@@ -1,5 +1,6 @@
 import { Breadcrumb } from 'semantic-ui-react';
 import config from './config';
+import { fireEvent } from '@testing-library/react';
 
 class CommandProcessor {
   constructor(terminalInputElem, setDirsNavigated, setAutoCompleteOutput) {
@@ -51,36 +52,27 @@ class CommandProcessor {
           return output;
         },
         autoCompleteHandler: function (commandArg, dirsNavigated) {
-          const currentDir =
-            dirsNavigated.length === 0
-              ? 'home'
-              : dirsNavigated[dirsNavigated.length - 1];
-
-          if (['skills', 'about', 'contact-info'].includes(currentDir)) {
-            return config.cmd_output_with_no_data;
-          }
-
-          const { output } = config.system_dirs[currentDir];
-          return output;
+          return this.genericAutoCompleteHandler(commandArg, dirsNavigated);
         },
       },
 
       cd: {
         description: 'Change the current directory',
         handler: function (commandArg, dirsNavigated) {
+          const updatedDirsNavigated = [...dirsNavigated];
           if (!commandArg) {
-            this.setDirsNavigated([]);
+            updatedDirsNavigated.length = 0;
+            this.setDirsNavigated(updatedDirsNavigated);
             return config.cmd_output_with_no_data;
           }
 
           const cmdArgDirectories = commandArg.split('/');
-          console.log(cmdArgDirectories);
 
           for (const dir of cmdArgDirectories) {
             const currentDir =
-              dirsNavigated.length === 0
+              updatedDirsNavigated.length === 0
                 ? 'home'
-                : dirsNavigated[dirsNavigated.length - 1];
+                : updatedDirsNavigated[updatedDirsNavigated.length - 1];
             const dirsInCurrentDir = config.system_dirs[currentDir].directories;
 
             switch (dir) {
@@ -89,16 +81,12 @@ class CommandProcessor {
               case '.':
                 break;
               case '..':
-                const updatedDirsNavigated = [...dirsNavigated];
                 updatedDirsNavigated.pop();
                 this.setDirsNavigated(updatedDirsNavigated);
                 break;
               default:
                 if (dirsInCurrentDir.includes(dir)) {
-                  this.setDirsNavigated((dirsNavigated) => [
-                    ...dirsNavigated,
-                    dir,
-                  ]);
+                  this.setDirsNavigated([...updatedDirsNavigated, dir]);
                   break;
                 }
                 return {
@@ -110,17 +98,7 @@ class CommandProcessor {
           return config.cmd_output_with_no_data;
         },
         autoCompleteHandler: function (commandArg, dirsNavigated) {
-          const currentDir =
-            dirsNavigated.length === 0
-              ? 'home'
-              : dirsNavigated[dirsNavigated.length - 1];
-
-          const data = [];
-          for (const dir of config.system_dirs[currentDir].directories) {
-            data.push({ value: dir });
-          }
-
-          return { data, type: 'row' };
+          return this.genericAutoCompleteHandler(commandArg, dirsNavigated);
         },
       },
 
@@ -146,15 +124,108 @@ class CommandProcessor {
 
       help: {
         description: '',
-        handler: null,
+        handler: function handler(commandArg, dirsNavigated) {
+          if (commandArg) {
+            return {
+              data: [{ value: 'help: too many arguements' }],
+              type: 'row',
+            };
+          }
+
+          const data = [
+            {
+              value:
+                'You can run the following commands to play around this terminal and know more about me. :)',
+            },
+          ];
+
+          const cmdsDescription = [];
+          Object.entries(this.commands)
+            .filter(
+              ([key]) =>
+                key !== 'default' && key !== 'help' && key !== 'emptyCommand'
+            )
+            .forEach(([key, value]) => {
+              const { description } = value;
+              cmdsDescription.push(
+                { value: key },
+                { value: `-- ${description}` }
+              );
+            });
+
+          return { data: [...data, ...cmdsDescription], type: 'column' };
+        },
         autoCompleteHandler: function (commandArg, dirsNavigated) {
           return config.cmd_output_with_no_data;
         },
       },
     };
-    this.commands.help.handler = this.createHelpCmdOutput.bind(this);
+    this.commands.help.handler = this.commands.help.handler.bind(this);
     this.commands.cd.handler = this.commands.cd.handler.bind(this);
+    this.commands.ls.autoCompleteHandler =
+      this.commands.ls.autoCompleteHandler.bind(this);
+    this.commands.cd.autoCompleteHandler =
+      this.commands.cd.autoCompleteHandler.bind(this);
   }
+
+  genericAutoCompleteHandler = (commandArg, dirsNavigated) => {
+    const updatedDirsNavigated = [...dirsNavigated];
+    const filter = { value: null };
+
+    if (commandArg) {
+      const retValue = this.parseCommandArg(
+        commandArg,
+        updatedDirsNavigated,
+        filter
+      );
+      if (retValue) return retValue;
+    }
+
+    const currentDir =
+      updatedDirsNavigated.length === 0
+        ? 'home'
+        : updatedDirsNavigated[updatedDirsNavigated.length - 1];
+
+    const data = [];
+    for (const dir of config.system_dirs[currentDir].directories) {
+      if (filter.value) {
+        if (dir.startsWith(filter.value)) {
+          data.push({ value: dir });
+        }
+      } else data.push({ value: dir });
+    }
+
+    return { data, type: 'row' };
+  };
+
+  parseCommandArg = (commandArg, updatedDirsNavigated, filter) => {
+    const cmdArgDirectories = commandArg.split('/');
+    for (let i = 0; i < cmdArgDirectories.length; i++) {
+      const currentDir =
+        updatedDirsNavigated.length === 0
+          ? 'home'
+          : updatedDirsNavigated[updatedDirsNavigated.length - 1];
+      const dirsInCurrentDir = config.system_dirs[currentDir].directories;
+
+      switch (cmdArgDirectories[i]) {
+        case '':
+          break;
+        case '.':
+          break;
+        case '..':
+          updatedDirsNavigated.pop();
+          break;
+        default:
+          if (dirsInCurrentDir.includes(cmdArgDirectories[i])) {
+            updatedDirsNavigated.push(cmdArgDirectories[i]);
+          } else if (i < cmdArgDirectories.length - 1) {
+            return config.cmd_output_with_no_data;
+          } else {
+            filter.value = cmdArgDirectories[i];
+          }
+      }
+    }
+  };
 
   handleCommandAutoComplete = (dirsNavigated) => {
     const terminalInputValue = this.terminalInputElem.current.value;
@@ -167,22 +238,7 @@ class CommandProcessor {
         cmdArg,
         dirsNavigated
       );
-
-      if (!cmdArg) {
-        this.setAutoCompleteOutput(autoCompleteOutput);
-        return;
-      }
-
-      const filteredAutoCompleteOutput = [];
-      for (const dataObject of autoCompleteOutput.data) {
-        if (dataObject.value.startsWith(cmdArg)) {
-          filteredAutoCompleteOutput.push(dataObject);
-        }
-      }
-      this.setAutoCompleteOutput({
-        data: filteredAutoCompleteOutput,
-        type: 'row',
-      });
+      this.setAutoCompleteOutput(autoCompleteOutput);
     } else {
       if (cmdArg) return;
 
@@ -196,69 +252,7 @@ class CommandProcessor {
     }
   };
 
-  handleDirsNavigatedStateChange(commandArg, dirsNavigated) {
-    if (!commandArg) {
-      this.setDirsNavigated([]);
-      return;
-    }
-
-    const cmdArgDirectories = commandArg.split('/');
-    console.log(cmdArgDirectories);
-
-    for (const dir of cmdArgDirectories) {
-      const currentDir =
-        dirsNavigated.length === 0
-          ? 'home'
-          : dirsNavigated[dirsNavigated.length - 1];
-      const dirsInCurrentDir = config.system_dirs[currentDir].directories;
-
-      switch (dir) {
-        case '':
-          break;
-        case '.':
-          break;
-        case '..':
-          const updatedDirsNavigated = [...dirsNavigated];
-          updatedDirsNavigated.pop();
-          this.setDirsNavigated(updatedDirsNavigated);
-          break;
-        default:
-          if (dirsInCurrentDir.includes(dir)) {
-            this.setDirsNavigated((dirsNavigated) => [...dirsNavigated, dir]);
-            break;
-          }
-          return {
-            data: [{ value: 'cd: No such file or directory' }],
-            type: 'row',
-          };
-      }
-    }
-  }
-
-  createHelpCmdOutput(commandArg, dirsNavigated) {
-    if (commandArg) {
-      return { data: [{ value: 'help: too many arguements' }], type: 'row' };
-    }
-
-    const data = [
-      {
-        value:
-          'You can run the following commands to play around this terminal and know more about me. :)',
-      },
-    ];
-
-    const cmdsDescription = [];
-    Object.entries(this.commands)
-      .filter(
-        ([key]) => key !== 'default' && key !== 'help' && key !== 'emptyCommand'
-      )
-      .forEach(([key, value]) => {
-        const { description } = value;
-        cmdsDescription.push({ value: key }, { value: `-- ${description}` });
-      });
-
-    return { data: [...data, ...cmdsDescription], type: 'column' };
-  }
+  createHelpCmdOutput(commandArg, dirsNavigated) {}
 
   getCommandObject(commandName) {
     this.terminalInputElem.current.value = '';
