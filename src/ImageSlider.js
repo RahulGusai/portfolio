@@ -2,7 +2,6 @@ import React, { Fragment, useRef } from 'react';
 import { Icon } from 'semantic-ui-react';
 import myImage from './me.jpeg';
 import './imageSlider.css';
-import { func } from 'prop-types';
 
 const ImageSlider = () => {
   const [current, setCurrent] = React.useState(0);
@@ -45,12 +44,14 @@ const ImageSlider = () => {
           className="left-arrow"
           size="small"
           name="chevron left"
+          color="black"
           onClick={handleLeftArrowClick}
         />
         <Icon
           className="right-arrow"
           size="small"
           name="chevron right"
+          color="black"
           onClick={handleRightArrowClick}
         />
       </nav>

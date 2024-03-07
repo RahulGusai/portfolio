@@ -107,14 +107,13 @@ const config = {
       output: {
         data: [
           {
-            value: `Hi, <strong>I'm Rahul.</strong>
-            You're here because you need something built. But not just anything.
-            You need something excellent not just someone's idea of a minimum viable product. What you're looking for is something beautiful;<strong> something that stands out. Something Different</strong>
-            And you came looking for me.
-            That's a pretty good call.
-            I have over five years of experience in Software engineering, working with tech stacks such as Java, Python, SpringBoot, Django, Flutter and Apache Kafka, just to name a few. I also have skills in front-end development, particularly in JavaScript, TypeScript, ReactJs,Three.Js and NextJs.
-            <strong>Engineering problems excite me;</strong>  I am a natural problem solver who enjoys creating scalable, maintainable systems. Apart from work, I am an avid trekker who finds solitude and peace in the lap of mountains. Here are a few pictures of mine while trekking in the Himalayas.
-            I do not do things small and I do not do things halfway. If you or your company need a sure bet, my inbox is open.`,
+            value: `Hi, <strong>I'm Rahul</strong>.
+            I am the right person if you want to build something beautiful, <strong>something that stands out</strong> and can be scaled and maintained going ahead.
+            After all, What is use of a software which can't be extended or maintained?
+            I have more than five years of professional experience in Software engineering, working with tech stacks such as Java, Python, SpringBoot, Django, FastAPI, Flutter and Apache Kafka, to name a few. I also have skills in front-end and infrastructure technologies, particularly in JavaScript, TypeScript, ReactJs, ThreeJs, NextJs, docker and K8s.
+            <strong>Engineering problems excite me;</strong> I am a natural problem solver who enjoys creating scalable, maintainable systems and most importantly, <strong>solving problems.</strong>
+            My inbox is always open for any opportunites ot discussions. (It could be non-technical as well)
+            Apart from work, I am an avid trekker who finds solitude and peace in the lap of mountains. Here are a few pictures of mine while trekking in the Himalayas.`,
             type: 'about-section',
             metaData: {},
           },

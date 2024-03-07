@@ -1,17 +1,25 @@
 :root {
   --footer-height: 40px;
-  --footer-margin: 10px;
+  --terminal-margin: 10px;
+  --outer-container-padding: 10px;
 }
 
 .outer-container {
-  background-color: black;
+  background-color: #005b44;
+  padding-top: var(--outer-container-padding);
 }
 
 .terminal {
-  width: 100%;
-  height: calc(100vh - var(--footer-height) - var(--footer-margin));
-  background-color: black;
+  max-width: 100%;
+  height: calc(
+    100vh - var(--footer-height) - var(--terminal-margin) -
+      var(--outer-container-padding)
+  );
   overflow-y: auto;
+  margin: 0px 10px 10px 10px;
+  padding: 10px;
+  border: 2px solid #00c9a7;
+  border-radius: 10px;
 }
 
 .terminal-header {
@@ -24,17 +32,14 @@
 }
 
 .welcome-message {
-  background-color: black;
-  color: rgb(0, 187, 0);
-  padding-top: 10px;
-  padding-left: 10px;
+  color: #00c9a7;
 }
 
 .welcome-message .welcome-message-text {
   display: inline;
   font-size: 18px;
   letter-spacing: 1px;
-  font-family: 'Monoid';
+  font-family: 'Anonymous Pro';
 }
 
 .welcome-message .cursor {
@@ -61,15 +66,16 @@
   flex-wrap: wrap;
   gap: 4px;
   font-size: 17px;
-  font-family: 'Monoid';
+  font-family: 'Anonymous Pro';
 }
 
 .prompt-label {
-  color: white;
+  color: #ffc75f;
+  font-weight: bold;
 }
 
 .prompt-label .current-dir {
-  color: teal;
+  color: #00c9a7;
   font-weight: bold;
 }
 
@@ -77,14 +83,13 @@
   flex: 1;
   display: flex;
   align-items: center;
-  color: rgb(0, 187, 0);
 }
 
 .prompt-input input {
   background-color: transparent;
   border: none;
   outline: none;
-  color: rgb(0, 187, 0);
+  color: #00c9a7;
   width: 100%;
   flex: 1;
   font-size: 16px;
@@ -92,21 +97,21 @@
 }
 
 .prompt-input input::selection {
-  color: rgb(0, 187, 0);
+  color: #00c9a7;
 }
 
 .current-output-row {
-  color: rgb(0, 187, 0);
+  color: #00c9a7;
   font-size: 17px;
-  font-family: 'Monoid';
+  font-family: 'Anonymous Pro';
   display: flex;
   gap: 30px;
 }
 
 .current-output-column {
-  color: rgb(0, 187, 0);
+  color: #00c9a7;
   font-size: 17px;
-  font-family: 'Monoid';
+  font-family: 'Anonymous Pro';
   display: flex;
   flex-direction: column;
   gap: 7px;
@@ -140,7 +145,7 @@
   padding: 5px;
   width: 250px;
   height: 100px;
-  background-color: green;
+  background-color: #00c9a7;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
@@ -150,24 +155,23 @@
 .contact-card-data {
   display: flex;
   gap: 10px;
-  color: black;
+  color: #005b44;
   font-size: 15px;
   font-style: italic;
 }
 
 .about-section {
   width: 900px;
-  height: 500px;
-  background-color: black;
+  min-height: 400px;
   margin: 10px;
   display: flex;
-  gap: 4px;
+  gap: 5px;
 }
 
 .about-section .text {
   width: 40%;
-  background-color: green;
-  color: black;
+  background-color: #00c9a7;
+  color: #005b44;
   font-size: 15px;
   white-space: pre-line;
   border-radius: 5px;
@@ -175,27 +179,25 @@
 }
 
 .images-container {
-  background-color: green;
+  background-color: #00c9a7;
   width: 40%;
   border-radius: 5px;
 }
 
 .footer {
   height: var(--footer-height);
-  margin-top: var(--footer-margin);
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: black;
   transition: background-color 0.3s;
   transition: box-shadow 0.3s;
 }
 
-.footer:hover {
+/* .footer:hover {
   background-color: #413e3e;
   box-shadow: 2px 2px 15px #413e3e;
-}
+} */
 
 .description {
   margin-right: 10px;

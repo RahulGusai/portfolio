@@ -30,17 +30,19 @@ const Terminal = () => {
   );
 
   const [welcomeMessageIndex, setWelcomeMessageIndex] = useState(0);
-  const welcomeMessage =
-    'Hi there! Welcome to my page.\nYou can use this terminal to learn more about me.\nFeel free to reach out if you have any questions or inquiries.';
+  const welcomeMessage = `Hi, I'm Rahul.\nYou're here because you need something built. But not just anything.You need something excellent, not just someone's idea of a minimum viable product.\nI do not do things small and I do not do things halfway. If you or your company need a sure bet, my inbox is open. :)\nYou can navigate through this terminal to know more about me. help command will list all the available commands.`;
 
   useEffect(() => {
     if (welcomeMessageIndex < welcomeMessage.length) {
       if (!isTyping) setIsTyping(true);
 
+      if (welcomeMessageIndex === 0) {
+        welcomeMsgElem.current.innerHTML = '';
+      }
       welcomeMsgElem.current.innerHTML +=
         welcomeMessage.charAt(welcomeMessageIndex);
       const updatedWelcomeMessageIndex = welcomeMessageIndex + 1;
-      setTimeout(() => setWelcomeMessageIndex(updatedWelcomeMessageIndex), 50);
+      setTimeout(() => setWelcomeMessageIndex(updatedWelcomeMessageIndex), 70);
     } else {
       welcomeMsgCursorElem.current.className = 'inactive';
       setIsPageLoaded(true);
