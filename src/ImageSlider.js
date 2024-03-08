@@ -1,16 +1,15 @@
 import React, { Fragment, useRef } from 'react';
 import { Icon } from 'semantic-ui-react';
-import myImage from './me.jpeg';
+import imageGallery1 from './imageGallery/imageGallery1.jpeg';
+import imageGallery2 from './imageGallery/imageGallery2.jpeg';
+import imageGallery3 from './imageGallery/imageGallery3.jpeg';
+import imageGallery4 from './imageGallery/imageGallery4.jpeg';
 import './imageSlider.css';
 
 const ImageSlider = () => {
   const [current, setCurrent] = React.useState(0);
 
-  const images = [
-    myImage,
-    'https://source.unsplash.com/VFGEhLznjPU',
-    'https://source.unsplash.com/InR-EhiO_js',
-  ];
+  const images = [imageGallery1, imageGallery2, imageGallery3, imageGallery4];
 
   function handleLeftArrowClick() {
     let newIndex = current - 1;

@@ -10,9 +10,11 @@
 }
 
 .slider .image {
-  width: 100%;
+  width: 300px;
   height: 400px;
+  border-radius: 10px;
   display: none;
+  box-shadow: 5px 2px 5px 0px #005b44;
 }
 
 .slider .active {

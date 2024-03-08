@@ -10,7 +10,7 @@ const config = {
 
   system_dirs: {
     home: {
-      directories: ['skills', 'resume', 'contact-info', 'about'],
+      directories: ['skills', 'resume', 'contact-info', 'about', 'projects'],
       output: {
         data: [
           { value: 'skills' },
@@ -87,7 +87,7 @@ const config = {
         data: [
           {
             value: null,
-            type: 'card',
+            type: 'contact-card',
             metaData: {
               keys: ['Name', 'Email', 'Mobile No', 'Country'],
               values: [
@@ -112,10 +112,46 @@ const config = {
             After all, What is use of a software which can't be extended or maintained?
             I have more than five years of professional experience in Software engineering, working with tech stacks such as Java, Python, SpringBoot, Django, FastAPI, Flutter and Apache Kafka, to name a few. I also have skills in front-end and infrastructure technologies, particularly in JavaScript, TypeScript, ReactJs, ThreeJs, NextJs, docker and K8s.
             <strong>Engineering problems excite me;</strong> I am a natural problem solver who enjoys creating scalable, maintainable systems and most importantly, <strong>solving problems.</strong>
-            My inbox is always open for any opportunites ot discussions. (It could be non-technical as well)
-            Apart from work, I am an avid trekker who finds solitude and peace in the lap of mountains. Here are a few pictures of mine while trekking in the Himalayas.`,
+            My inbox is always open for any opportunites or discussions. (It could be non-technical as well🙇🏻) 
+            Apart from work, I am an avid trekker who finds solitude and peace in the lap of mountains. Here are a few pictures of mine while trekking in the Himalayas.🌄`,
             type: 'about-section',
             metaData: {},
+          },
+        ],
+        type: 'row',
+      },
+    },
+
+    projects: {
+      directories: [],
+      output: {
+        data: [
+          {
+            value: null,
+            type: 'project-card',
+            metaData: {
+              'Project Name': 'Note Keeper',
+              Description: 'It is a web based instant note taking tool.',
+              'Tech Stack':
+                'Backend - Python,Flask, Frontend - Javascript/NextJs',
+              hyperLinks: {
+                Link: 'https://note-keeper-ochre.vercel.app/',
+                Repo: 'https://github.com/RahulGusai/note-keeper',
+              },
+            },
+          },
+          {
+            value: null,
+            type: 'project-card',
+            metaData: {
+              'Project Name': 'Topic Modeller',
+              Description:
+                'This is a standalone application which can be used to extract the relevant topics from a webpage.',
+              'Tech Stack': 'Python,FastAPI',
+              hyperLinks: {
+                Repo: 'https://github.com/RahulGusai/topic-modeller',
+              },
+            },
           },
         ],
         type: 'row',

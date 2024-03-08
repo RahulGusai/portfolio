@@ -42,7 +42,7 @@ const Terminal = () => {
       welcomeMsgElem.current.innerHTML +=
         welcomeMessage.charAt(welcomeMessageIndex);
       const updatedWelcomeMessageIndex = welcomeMessageIndex + 1;
-      setTimeout(() => setWelcomeMessageIndex(updatedWelcomeMessageIndex), 70);
+      setTimeout(() => setWelcomeMessageIndex(updatedWelcomeMessageIndex), 60);
     } else {
       welcomeMsgCursorElem.current.className = 'inactive';
       setIsPageLoaded(true);
@@ -216,6 +216,10 @@ const Terminal = () => {
     }
   };
 
+  const handleTerminalClick = (e) => {
+    terminalInputElem.current.focus();
+  };
+
   const pathToCurrentDir =
     dirsNavigated.length > 0 ? `~/${dirsNavigated.join('/')}` : '~';
 
@@ -228,7 +232,16 @@ const Terminal = () => {
         src="sound.mp3"
         onEnded={restartAudio}
       ></audio>
-      <div className="terminal" ref={terminalContainerElem}>
+      <div
+        className="terminal"
+        ref={terminalContainerElem}
+        onClick={handleTerminalClick}
+      >
+        <div className="terminal-toolbar">
+          <div className="toolbar-icon close"></div>
+          <div className="toolbar-icon minimize"></div>
+          <div className="toolbar-icon collapse"></div>
+        </div>
         <div className="terminal-header">
           <div className="welcome-message">
             <pre className="welcome-message-text" ref={welcomeMsgElem}></pre>
@@ -240,7 +253,7 @@ const Terminal = () => {
               <br></br>
             ))}
           </div>
-          <div onClick={handleVolumeIconPressed}>
+          {/* <div onClick={handleVolumeIconPressed}>
             <Icon
               className="volume-icon"
               color="teal"
@@ -248,7 +261,7 @@ const Terminal = () => {
               name="volume up"
               disabled={soundEnabled ? false : true}
             />
-          </div>
+          </div> */}
         </div>
 
         {commandSnapshots.map((commandSnapshot, index) => {
@@ -314,7 +327,7 @@ const Terminal = () => {
                     );
                   }
 
-                  if (type === 'card') {
+                  if (type === 'contact-card') {
                     return (
                       <div className="current-output-div">
                         <div className="contact-card">
@@ -329,6 +342,41 @@ const Terminal = () => {
                             );
                           })}
                         </div>
+                      </div>
+                    );
+                  }
+
+                  if (type === 'project-card') {
+                    console.log(Object.keys(metaData));
+                    return (
+                      <div className="project-card">
+                        {Object.keys(metaData).map((key) => {
+                          if (key === 'hyperLinks') {
+                            return (
+                              <div className="project-card-data">
+                                {Object.keys(metaData.hyperLinks).map((key) => {
+                                  return (
+                                    <a
+                                      href={metaData.hyperLinks[key]}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      <u>{key}</u>
+                                    </a>
+                                  );
+                                })}
+                              </div>
+                            );
+                          }
+                          return (
+                            <div className="project-card-data">
+                              <span>
+                                <b>{`${key}: `}</b>
+                              </span>
+                              <span>{metaData[key]}</span>
+                            </div>
+                          );
+                        })}
                       </div>
                     );
                   }

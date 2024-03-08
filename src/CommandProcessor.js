@@ -134,8 +134,8 @@ class CommandProcessor {
 
           const data = [
             {
-              value:
-                'You can run the following commands to play around this terminal and know more about me. :)',
+              value: `You can run the following commands to explore this terminal and learn more about me.
+                 It stores the history of commands and supports auto-completion as well.🤓`,
             },
           ];
 
