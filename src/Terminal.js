@@ -264,10 +264,13 @@ const Terminal = () => {
         </div>
 
         {commandSnapshots.map((commandSnapshot, index) => {
-          const currentOutputClass =
+          let currentOutputClass =
             commandSnapshot.command.output.type === 'row'
               ? 'current-output-row'
               : 'current-output-column';
+          currentOutputClass = commandSnapshot.command.output.margin
+            ? `${currentOutputClass} with-margin`
+            : currentOutputClass;
 
           return (
             <>
@@ -346,7 +349,6 @@ const Terminal = () => {
                   }
 
                   if (type === 'project-card') {
-                    console.log(Object.keys(metaData));
                     return (
                       <div className="project-card">
                         {Object.keys(metaData).map((key) => {

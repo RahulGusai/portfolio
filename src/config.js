@@ -1,23 +1,11 @@
 const config = {
   DEFAULT_PROMPT_LABEL: 'rahul@portfolio:',
 
-  // default_cmd_output_list: {
-  //   data: [{ value: 'Command not found.' }],
-  //   type: 'row',
-  // },
-
   cmd_output_with_no_data: { data: [] },
 
   system_dirs: {
     home: {
-      directories: [
-        'skills',
-        'resume',
-        'contact-info',
-        'about',
-        'projects',
-        'projects',
-      ],
+      directories: ['skills', 'resume', 'contact-info', 'about', 'projects'],
       output: {
         data: [
           { value: 'skills' },
@@ -107,6 +95,7 @@ const config = {
           },
         ],
         type: 'row',
+        margin: true,
       },
     },
     about: {
@@ -126,6 +115,7 @@ const config = {
           },
         ],
         type: 'row',
+        margin: true,
       },
     },
 
@@ -137,13 +127,12 @@ const config = {
             value: null,
             type: 'project-card',
             metaData: {
-              'Project Name': 'Note Keeper',
-              Description: 'It is a web based instant note taking tool.',
-              'Tech Stack':
-                'Backend - Python,Flask, Frontend - Javascript/NextJs',
+              'Project Name': 'Portfolio',
+              Description: 'My personal website.',
+              'Tech Stack': 'HTML/CSS,Javascript and ReactJs',
               hyperLinks: {
-                Link: 'https://note-keeper-ochre.vercel.app/',
-                Repo: 'https://github.com/RahulGusai/note-keeper',
+                Link: 'https://rahul-gusai.vercel.app/',
+                Repo: 'https://github.com/RahulGusai/portfolio',
               },
             },
           },
@@ -160,8 +149,23 @@ const config = {
               },
             },
           },
+          {
+            value: null,
+            type: 'project-card',
+            metaData: {
+              'Project Name': 'Note Keeper',
+              Description: 'It is a web based instant note taking tool.',
+              'Tech Stack':
+                'Backend - Python,Flask, Frontend - Javascript/NextJs',
+              hyperLinks: {
+                Link: 'https://note-keeper-ochre.vercel.app/',
+                Repo: 'https://github.com/RahulGusai/note-keeper',
+              },
+            },
+          },
         ],
         type: 'row',
+        margin: true,
       },
     },
   },

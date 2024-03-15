@@ -68,7 +68,7 @@
 
 .welcome-message .welcome-message-text {
   display: inline;
-  font-size: 16px;
+  font-size: 18px;
   letter-spacing: 1px;
   font-family: 'Anonymous Pro';
 }
@@ -96,7 +96,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 4px;
-  font-size: 17px;
+  font-size: 18px;
   font-family: 'Anonymous Pro';
 }
 
@@ -123,8 +123,8 @@
   color: #00c9a7;
   width: 100%;
   flex: 1;
-  font-size: 16px;
   word-wrap: break-word;
+  font-weight: 400;
 }
 
 .prompt-input input::selection {
@@ -133,19 +133,25 @@
 
 .current-output-row {
   color: #00c9a7;
-  font-size: 17px;
+  font-size: 18px;
   font-family: 'Anonymous Pro';
   display: flex;
+  flex-wrap: wrap;
   gap: 30px;
 }
 
 .current-output-column {
   color: #00c9a7;
-  font-size: 17px;
+  font-size: 18px;
   font-family: 'Anonymous Pro';
   display: flex;
+  flex-wrap: wrap;
   flex-direction: column;
   gap: 7px;
+}
+
+.with-margin {
+  margin: 10px 0px 10px 0px;
 }
 
 .current-output-meter-div {
@@ -157,10 +163,14 @@
   width: 200px;
 }
 
+.current-output-div a {
+  color: #ffc75f;
+}
+
 .meter-container {
   display: flex;
   width: 200px;
-  background-color: grey;
+  background-color: #e8e7e6;
 }
 .meter-container .box {
   width: 20%;
@@ -168,15 +178,14 @@
 }
 
 .meter-container .fill {
-  background-color: green;
+  background-color: #ffc75f;
 }
 
 .contact-card {
-  margin: 10px;
   padding: 5px;
   width: 250px;
   height: 100px;
-  background-color: #00c9a7;
+  background-color: #ffc75f;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
@@ -192,11 +201,10 @@
 }
 
 .project-card {
-  margin: 10px 0px 10px 0px;
   padding: 5px;
   min-width: 550px;
   min-height: 100px;
-  background-color: #00c9a7;
+  background-color: #ffc75f;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
@@ -217,14 +225,13 @@
 .about-section {
   width: 900px;
   min-height: 400px;
-  margin: 10px;
   display: flex;
   gap: 5px;
 }
 
 .about-section .text {
   width: 40%;
-  background-color: #00c9a7;
+  background-color: #ffc75f;
   color: #005b44;
   font-size: 15px;
   white-space: pre-line;
@@ -233,7 +240,7 @@
 }
 
 .images-container {
-  background-color: #00c9a7;
+  background-color: #ffc75f;
   width: 40%;
   border-radius: 5px;
 }
@@ -247,11 +254,6 @@
   transition: background-color 0.3s;
   transition: box-shadow 0.3s;
 }
-
-/* .footer:hover {
-    background-color: #413e3e;
-    box-shadow: 2px 2px 15px #413e3e;
-  } */
 
 .description {
   margin-right: 10px;

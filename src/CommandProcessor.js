@@ -29,30 +29,27 @@ class CommandProcessor {
         description: 'Lists all the files in the present directory',
         outputType: 'column',
         handler: function (commandArg, dirsNavigated) {
-          const directory =
-            dirsNavigated.length === 0
-              ? 'home'
-              : dirsNavigated[dirsNavigated.length - 1];
-
-          const currentDir = config.system_dirs[directory];
+          const updatedDirsNavigated = [...dirsNavigated];
           if (commandArg) {
-            const { directories, output } = currentDir;
-            if (directories.includes(commandArg)) {
-              return config.system_dirs[commandArg].output;
-            } else {
-              for (const file of output.data) {
-                if (file.value === commandArg) {
-                  return { data: [{ value: file.value }], type: 'row' };
-                }
-              }
+            const filter = { value: null };
+            const retValue = this.parseCommandArg(
+              commandArg,
+              updatedDirsNavigated,
+              filter
+            );
+            if (retValue || filter.value) {
+              const outputMessage = `ls: ${commandArg}: No such file or directory`;
               return {
-                data: [{ value: 'ls: No such file or directory' }],
+                data: [{ value: outputMessage }],
                 type: 'row',
               };
             }
           }
-
-          const { output } = currentDir;
+          const currentDir =
+            updatedDirsNavigated.length === 0
+              ? 'home'
+              : updatedDirsNavigated[updatedDirsNavigated.length - 1];
+          const { output } = config.system_dirs[currentDir];
           return output;
         },
         autoCompleteHandler: function (command, commandArg, dirsNavigated) {
@@ -98,7 +95,9 @@ class CommandProcessor {
                   break;
                 }
                 return {
-                  data: [{ value: 'cd: No such file or directory' }],
+                  data: [
+                    { value: `cd: no such file or directory: ${commandArg}` },
+                  ],
                   type: 'row',
                 };
             }
@@ -188,9 +187,13 @@ class CommandProcessor {
             data: [],
           };
         },
+        autoCompleteHandler: function (command, commandArg, dirsNavigated) {
+          return config.cmd_output_with_no_data;
+        },
       },
     };
     this.commands.help.handler = this.commands.help.handler.bind(this);
+    this.commands.ls.handler = this.commands.ls.handler.bind(this);
     this.commands.cd.handler = this.commands.cd.handler.bind(this);
     this.commands.ls.autoCompleteHandler =
       this.commands.ls.autoCompleteHandler.bind(this);
@@ -227,8 +230,10 @@ class CommandProcessor {
     }
 
     if (data.length === 1) {
+      const cmdArgList = commandArg.split('/').slice(0, -1);
+      const prefix = cmdArgList.length > 0 ? `${cmdArgList.join('/')}/` : '';
       const [input] = data;
-      this.terminalInputElem.current.value = `${command} ${input.value}`;
+      this.terminalInputElem.current.value = `${command} ${prefix}${input.value}`;
       return;
     }
     return { data, type: 'row' };
@@ -294,8 +299,6 @@ class CommandProcessor {
       this.setAutoCompleteOutput({ data: autoCompleteOutput, type: 'row' });
     }
   };
-
-  createHelpCmdOutput(commandArg, dirsNavigated) {}
 
   getCommandObject(commandName) {
     this.terminalInputElem.current.value = '';
