@@ -29,12 +29,22 @@ const config = {
             metaData: { total: 5, value: 3 },
           },
           {
+            value: 'Django/Flask/FastAPI',
+            type: 'meter',
+            metaData: { total: 5, value: 4 },
+          },
+          {
+            value: 'SpringBoot',
+            type: 'meter',
+            metaData: { total: 5, value: 4 },
+          },
+          {
             value: 'HTML/CSS',
             type: 'meter',
             metaData: { total: 5, value: 4 },
           },
           {
-            value: 'React.Js/Next.Js',
+            value: 'ReactJs/NextJs',
             type: 'meter',
             metaData: { total: 5, value: 4 },
           },
@@ -52,9 +62,14 @@ const config = {
             metaData: { total: 5, value: 3 },
           },
           {
-            value: 'Software Development',
+            value: 'Problem Solving',
             type: 'meter',
             metaData: { total: 5, value: 4 },
+          },
+          {
+            value: 'Technical Leadership',
+            type: 'meter',
+            metaData: { total: 5, value: 3 },
           },
         ],
         type: 'column',
