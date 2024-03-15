@@ -1,16 +1,23 @@
 const config = {
   DEFAULT_PROMPT_LABEL: 'rahul@portfolio:',
 
-  default_cmd_output_list: {
-    data: [{ value: 'Command not found.' }],
-    type: 'row',
-  },
+  // default_cmd_output_list: {
+  //   data: [{ value: 'Command not found.' }],
+  //   type: 'row',
+  // },
 
   cmd_output_with_no_data: { data: [] },
 
   system_dirs: {
     home: {
-      directories: ['skills', 'resume', 'contact-info', 'about', 'projects'],
+      directories: [
+        'skills',
+        'resume',
+        'contact-info',
+        'about',
+        'projects',
+        'projects',
+      ],
       output: {
         data: [
           { value: 'skills' },
@@ -111,7 +118,7 @@ const config = {
             I am the right person if you want to build something beautiful, <strong>something that stands out</strong> and can be scaled and maintained going ahead.
             After all, What is use of a software which can't be extended or maintained?
             I have more than five years of professional experience in Software engineering, working with tech stacks such as Java, Python, SpringBoot, Django, FastAPI, Flutter and Apache Kafka, to name a few. I also have skills in front-end and infrastructure technologies, particularly in JavaScript, TypeScript, ReactJs, ThreeJs, NextJs, docker and K8s.
-            <strong>Engineering problems excite me;</strong> I am a natural problem solver who enjoys creating scalable, maintainable systems and most importantly, <strong>solving problems.</strong>
+            <strong>Engineering problems excite me;</strong> I am a natural problem solver who enjoys creating <strong>customer centric solutions</strong> at the core.
             My inbox is always open for any opportunites or discussions. (It could be non-technical as well🙇🏻) 
             Apart from work, I am an avid trekker who finds solitude and peace in the lap of mountains. Here are a few pictures of mine while trekking in the Himalayas.🌄`,
             type: 'about-section',

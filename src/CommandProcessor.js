@@ -1,6 +1,4 @@
-import { Breadcrumb } from 'semantic-ui-react';
 import config from './config';
-import { fireEvent } from '@testing-library/react';
 
 class CommandProcessor {
   constructor(terminalInputElem, setDirsNavigated, setAutoCompleteOutput) {
@@ -18,7 +16,13 @@ class CommandProcessor {
       default: {
         description: 'Default command when the user enters an invalid command',
         handler: function (arg, dirsNavigated) {
-          return config.default_cmd_output_list;
+          console.log(this.commands.default);
+          const outputMessage = `Command not found: ${this.commands.default.cmdName}`;
+          const cmdOutput = {
+            data: [{ value: outputMessage }],
+            type: 'row',
+          };
+          return cmdOutput;
         },
       },
       ls: {
@@ -51,8 +55,12 @@ class CommandProcessor {
           const { output } = currentDir;
           return output;
         },
-        autoCompleteHandler: function (commandArg, dirsNavigated) {
-          return this.genericAutoCompleteHandler(commandArg, dirsNavigated);
+        autoCompleteHandler: function (command, commandArg, dirsNavigated) {
+          return this.genericAutoCompleteHandler(
+            command,
+            commandArg,
+            dirsNavigated
+          );
         },
       },
 
@@ -97,8 +105,12 @@ class CommandProcessor {
           }
           return config.cmd_output_with_no_data;
         },
-        autoCompleteHandler: function (commandArg, dirsNavigated) {
-          return this.genericAutoCompleteHandler(commandArg, dirsNavigated);
+        autoCompleteHandler: function (command, commandArg, dirsNavigated) {
+          return this.genericAutoCompleteHandler(
+            command,
+            commandArg,
+            dirsNavigated
+          );
         },
       },
 
@@ -117,7 +129,7 @@ class CommandProcessor {
               : `/home/${dirsNavigated.join('/')}`;
           return { data: [{ value: pwdStr }], type: 'row' };
         },
-        autoCompleteHandler: function (commandArg, dirsNavigated) {
+        autoCompleteHandler: function (command, commandArg, dirsNavigated) {
           return config.cmd_output_with_no_data;
         },
       },
@@ -153,10 +165,28 @@ class CommandProcessor {
               );
             });
 
-          return { data: [...data, ...cmdsDescription], type: 'column' };
+          const usage = [
+            { value: `Not sure how to proceed ?` },
+            {
+              value: `Enter "ls skills" to view the skills or "ls projects" to see projects.`,
+            },
+          ];
+
+          return {
+            data: [...data, ...cmdsDescription, ...usage],
+            type: 'column',
+          };
         },
-        autoCompleteHandler: function (commandArg, dirsNavigated) {
+        autoCompleteHandler: function (command, commandArg, dirsNavigated) {
           return config.cmd_output_with_no_data;
+        },
+      },
+      clear: {
+        description: 'Clears everything on the terminal.',
+        handler: function handler(arg, dirsNavigated) {
+          return {
+            data: [],
+          };
         },
       },
     };
@@ -166,9 +196,10 @@ class CommandProcessor {
       this.commands.ls.autoCompleteHandler.bind(this);
     this.commands.cd.autoCompleteHandler =
       this.commands.cd.autoCompleteHandler.bind(this);
+    this.commands.default.handler = this.commands.default.handler.bind(this);
   }
 
-  genericAutoCompleteHandler = (commandArg, dirsNavigated) => {
+  genericAutoCompleteHandler = (command, commandArg, dirsNavigated) => {
     const updatedDirsNavigated = [...dirsNavigated];
     const filter = { value: null };
 
@@ -195,6 +226,11 @@ class CommandProcessor {
       } else data.push({ value: dir });
     }
 
+    if (data.length === 1) {
+      const [input] = data;
+      this.terminalInputElem.current.value = `${command} ${input.value}`;
+      return;
+    }
     return { data, type: 'row' };
   };
 
@@ -235,6 +271,7 @@ class CommandProcessor {
 
     if (this.commands.hasOwnProperty(cmd)) {
       const autoCompleteOutput = this.commands[cmd].autoCompleteHandler(
+        cmd,
         cmdArg,
         dirsNavigated
       );
@@ -247,6 +284,12 @@ class CommandProcessor {
         if (key.startsWith(cmd)) {
           autoCompleteOutput.push({ value: key });
         }
+      }
+
+      if (autoCompleteOutput.length === 1) {
+        const [input] = autoCompleteOutput;
+        this.terminalInputElem.current.value = input.value;
+        return;
       }
       this.setAutoCompleteOutput({ data: autoCompleteOutput, type: 'row' });
     }
@@ -266,6 +309,7 @@ class CommandProcessor {
       commandName === 'emptyCommand' ||
       !this.commands.hasOwnProperty(commandName)
     ) {
+      this.commands.default.cmdName = commandName;
       return this.commands.default;
     }
 

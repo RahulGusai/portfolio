@@ -147,28 +147,27 @@ const Terminal = () => {
 
         const [commandName, commandArg] = event.target.value.split(' ');
 
-        if (commandName === 'clear') {
-          terminalInputElem.current.value = '';
-          setCommandSnapshots([]);
-          return;
-        }
-
         const commandObj = commandProcessor.getCommandObject(commandName);
         const output = commandObj.handler(commandArg, dirsNavigated);
         const pathToCurrentDir =
           dirsNavigated.length > 0 ? `~/${dirsNavigated.join('/')}` : '~';
 
-        setCommandSnapshots((commandSnapshots) => [
-          ...commandSnapshots,
-          {
-            promptLabel: config.DEFAULT_PROMPT_LABEL,
-            pathToCurrentDir: pathToCurrentDir,
-            promptInput: commandArg
-              ? `${commandName} ${commandArg}`
-              : commandName,
-            command: { ...commandObj, output: output },
-          },
-        ]);
+        if (commandName === 'clear') {
+          terminalInputElem.current.value = '';
+          setCommandSnapshots([]);
+        } else {
+          setCommandSnapshots((commandSnapshots) => [
+            ...commandSnapshots,
+            {
+              promptLabel: config.DEFAULT_PROMPT_LABEL,
+              pathToCurrentDir: pathToCurrentDir,
+              promptInput: commandArg
+                ? `${commandName} ${commandArg}`
+                : commandName,
+              command: { ...commandObj, output: output },
+            },
+          ]);
+        }
 
         const updatedCommands = [
           ...commandsHistory.commands,
