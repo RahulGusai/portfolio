@@ -121,7 +121,7 @@ const config = {
             value: `Hi, <strong>I'm Rahul</strong>.
             I am the right person if you want to build something beautiful, <strong>something that stands out</strong> and can be scaled and maintained going ahead.
             After all, What is use of a software which can't be extended or maintained?
-            I have more than five years of professional experience in Software engineering, working with tech stacks such as Java, Python, SpringBoot, Django, FastAPI, Flutter and Apache Kafka, to name a few. I also have skills in front-end and infrastructure technologies, particularly in JavaScript, TypeScript, ReactJs, ThreeJs, NextJs, docker and K8s.
+            With over five years of professional experience in software engineering, I specialize in delivering high-quality software solutions while maintaining a strong work ethic. My expertise spans across various tech stacks, encompassing both backend and frontend technologies. Additionally, my proficiency extends to infrastructure technologies, including containerization and orchestration tools like Docker and Kubernetes.
             <strong>Engineering problems excite me;</strong> I am a natural problem solver who enjoys creating <strong>customer centric solutions</strong> at the core.
             My inbox is always open for any opportunites or discussions. (It could be non-technical as well🙇🏻) 
             Apart from work, I am an avid trekker who finds solitude and peace in the lap of mountains. Here are a few pictures of mine while trekking in the Himalayas.🌄`,
