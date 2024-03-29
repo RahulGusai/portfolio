@@ -18,7 +18,7 @@
   overflow-y: auto;
   margin: 0px 10px 10px 10px;
   padding: 10px;
-  border: 2px solid #00c9a7;
+  border: 2px solid #ffffff;
   border-radius: 10px;
 }
 
@@ -63,7 +63,7 @@
 }
 
 .welcome-message {
-  color: #00c9a7;
+  color: #ffffff;
 }
 
 .welcome-message .welcome-message-text {
@@ -106,7 +106,7 @@
 }
 
 .prompt-label .current-dir {
-  color: #00c9a7;
+  color: #66ff99;
   font-weight: bold;
 }
 
@@ -120,7 +120,7 @@
   background-color: transparent;
   border: none;
   outline: none;
-  color: #00c9a7;
+  color: #ffffff;
   width: 100%;
   flex: 1;
   word-wrap: break-word;
@@ -128,11 +128,11 @@
 }
 
 .prompt-input input::selection {
-  color: #00c9a7;
+  color: #ffffff;
 }
 
 .current-output-row {
-  color: #00c9a7;
+  color: #ffffff;
   font-size: 18px;
   font-family: 'Anonymous Pro';
   display: flex;
@@ -141,7 +141,7 @@
 }
 
 .current-output-column {
-  color: #00c9a7;
+  color: #ffffff;
   font-size: 18px;
   font-family: 'Anonymous Pro';
   display: flex;
@@ -165,6 +165,10 @@
 
 .current-output-div a {
   color: #ffc75f;
+}
+
+.disclaimer {
+  color: #ffff99;
 }
 
 .meter-container {
@@ -214,12 +218,12 @@
 .project-card-data {
   display: flex;
   gap: 10px;
-  color: #005b44;
+  color: black;
   font-size: 15px;
 }
 
 .project-card-data a {
-  color: #005b44;
+  color: black;
 }
 
 .about-section {
@@ -232,7 +236,7 @@
 .about-section .text {
   width: 40%;
   background-color: #ffc75f;
-  color: #005b44;
+  color: black;
   font-size: 15px;
   white-space: pre-line;
   border-radius: 5px;

@@ -81,6 +81,10 @@ class CommandProcessor {
             const dirsInCurrentDir = config.system_dirs[currentDir].directories;
 
             switch (dir) {
+              case '~':
+                updatedDirsNavigated.length = 0;
+                this.setDirsNavigated(updatedDirsNavigated);
+                break;
               case '':
                 break;
               case '.':
@@ -165,9 +169,10 @@ class CommandProcessor {
             });
 
           const usage = [
-            { value: `Not sure how to proceed ?` },
+            { value: `Not sure how to proceed ?`, type: 'disclaimer' },
             {
-              value: `Enter "ls skills" to view the skills or "ls projects" to see projects.`,
+              value: `Enter "ls ~/skills" to view the skills or "ls ~/projects" to see projects.`,
+              type: 'disclaimer',
             },
           ];
 
@@ -249,6 +254,9 @@ class CommandProcessor {
       const dirsInCurrentDir = config.system_dirs[currentDir].directories;
 
       switch (cmdArgDirectories[i]) {
+        case '~':
+          updatedDirsNavigated.length = 0;
+          break;
         case '':
           break;
         case '.':

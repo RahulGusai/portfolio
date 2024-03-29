@@ -7,7 +7,6 @@ import 'react-social-icons/github';
 import 'react-social-icons/stackoverflow';
 import 'react-social-icons/google';
 import 'react-social-icons/email';
-import { Fragment } from 'react';
 
 function App() {
   return (
@@ -45,20 +44,6 @@ function App() {
         </div>
         <div className="description">Crafted with ❤️</div>
       </div>
-
-      {/* <div className="about-page" ref={aboutPageRef}>
-        <div class="scroll-btn" onClick={handleScrollUpClick}>
-          <div class="mousey">
-            <div class="scroller"></div>
-          </div>
-        </div>
-        <div className="about-container">
-          <div className="images-container">
-            <ImageSlider></ImageSlider>
-          </div>
-          <div className="content-container"></div>
-        </div>
-      </div> */}
     </div>
   );
 }

@@ -12,8 +12,6 @@ const Terminal = () => {
     index: 0,
     commands: [],
   });
-  const [isPageLoaded, setIsPageLoaded] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(true);
   const [dirsNavigated, setDirsNavigated] = useState([]);
   const [autoCompleteOutput, setAutoCompleteOutput] = useState(null);
 
@@ -45,14 +43,12 @@ const Terminal = () => {
       setTimeout(() => setWelcomeMessageIndex(updatedWelcomeMessageIndex), 60);
     } else {
       welcomeMsgCursorElem.current.className = 'inactive';
-      setIsPageLoaded(true);
 
-      if (isTyping && !isPageLoaded) {
+      if (isTyping) {
         setIsTyping(false);
       }
-      if (!isPageLoaded) setIsPageLoaded(true);
     }
-  }, [isPageLoaded, isTyping, welcomeMessageIndex]);
+  }, [isTyping, welcomeMessageIndex]);
 
   useEffect(() => {
     if (isTyping) {
@@ -62,15 +58,6 @@ const Terminal = () => {
       audioElem.current.currentTime = 0;
     }
   }, [isTyping]);
-
-  useEffect(() => {
-    if (!isPageLoaded) {
-      terminalInputElem.current.disabled = true;
-    } else {
-      terminalInputElem.current.disabled = false;
-      terminalInputElem.current.focus();
-    }
-  }, [isPageLoaded]);
 
   const printAnimatedOutput = useCallback((animatedDiv, output) => {
     if (output.length === 0) {
@@ -91,31 +78,6 @@ const Terminal = () => {
   useEffect(() => {
     scrollToBottom();
   });
-
-  // useEffect(() => {
-  //   const currentOutputAnimatedDivs = document.querySelectorAll(
-  //     '.current-output-div-animated'
-  //   );
-
-  //   if (currentOutputAnimatedDivs.length === 0) return;
-  //   // if (soundEnabled) setIsTyping(true);
-
-  //   let delay = 0;
-  //   currentOutputAnimatedDivs.forEach((animatedDiv, index) => {
-  //     setTimeout(() => {
-  //       const output =
-  //         commandSnapshots[commandSnapshots.length - 1].command.outputList[
-  //           index
-  //         ];
-  //       if (output.hasOwnProperty('type')) {
-  //         animatedDiv.innerHTML = `<a href=${output['metaData']['address']} target="_blank" rel="noreferrer"> <u>${output.value}</u></a>`;
-  //         return;
-  //       }
-  //       printAnimatedOutput(animatedDiv, output.value);
-  //     }, delay);
-  //     delay += 200;
-  //   });
-  // }, [commandSnapshots, printAnimatedOutput, soundEnabled]);
 
   const restartAudio = () => {
     audioElem.current.currentTime = 0;
@@ -169,6 +131,8 @@ const Terminal = () => {
           ]);
         }
 
+        if (!commandName) return;
+
         const updatedCommands = [
           ...commandsHistory.commands,
           commandArg ? `${commandName} ${commandArg}` : commandName,
@@ -204,14 +168,6 @@ const Terminal = () => {
 
       default:
         break;
-    }
-  };
-
-  const handleVolumeIconPressed = (e) => {
-    if (!soundEnabled) {
-      setSoundEnabled(true);
-    } else {
-      setSoundEnabled(false);
     }
   };
 
@@ -252,15 +208,6 @@ const Terminal = () => {
               <br></br>
             ))}
           </div>
-          {/* <div onClick={handleVolumeIconPressed}>
-            <Icon
-              className="volume-icon"
-              color="teal"
-              size="large"
-              name="volume up"
-              disabled={soundEnabled ? false : true}
-            />
-          </div> */}
         </div>
 
         {commandSnapshots.map((commandSnapshot, index) => {
@@ -394,6 +341,10 @@ const Terminal = () => {
                         </div>
                       </div>
                     );
+                  }
+
+                  if (type === 'disclaimer') {
+                    return <div className="disclaimer">{value}</div>;
                   }
 
                   return <div className="current-output-div">{value}</div>;
