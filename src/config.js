@@ -155,6 +155,21 @@ const config = {
             value: null,
             type: 'project-card',
             metaData: {
+              'Project Name': 'Carbon Emissions Calculation Engine',
+              Description:
+                'This engine is tailored to assist businesses of all sizes in accurately calculating and offsetting their carbon emissions, paving the way for a greener and more sustainable future.',
+              'Tech Stack':
+                'Backend => Python,FastAPI, Frontend => Javascript/ReactJs',
+              hyperLinks: {
+                Link: 'https://climatecred.in',
+                Repo: 'https://github.com/RahulGusai/carbon-emissions',
+              },
+            },
+          },
+          {
+            value: null,
+            type: 'project-card',
+            metaData: {
               'Project Name': 'Topic Modeller',
               Description:
                 'This is a standalone application which can be used to extract the relevant topics from a webpage.',
@@ -171,7 +186,7 @@ const config = {
               'Project Name': 'Note Keeper',
               Description: 'It is a web based instant note taking tool.',
               'Tech Stack':
-                'Backend - Python,Flask, Frontend - Javascript/NextJs',
+                'Backend => Python,Flask, Frontend => Javascript/NextJs',
               hyperLinks: {
                 Link: 'https://note-keeper-ochre.vercel.app/',
                 Repo: 'https://github.com/RahulGusai/note-keeper',
