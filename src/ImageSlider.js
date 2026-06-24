@@ -1,4 +1,4 @@
-import React, { Fragment, useRef } from 'react';
+import React from 'react';
 import { Icon } from 'semantic-ui-react';
 import imageGallery1 from './imageGallery/imageGallery1.jpeg';
 import imageGallery2 from './imageGallery/imageGallery2.jpeg';
@@ -31,10 +31,24 @@ const ImageSlider = () => {
     <div className="gallery-container">
       <div className="slider">
         {images.map((image, index) => {
-          if (index != current) {
-            return <img className="image" src={image}></img>;
+          if (index !== current) {
+            return (
+              <img
+                key={index}
+                className="image"
+                src={image}
+                alt={`Trekking in the Himalayas ${index + 1}`}
+              ></img>
+            );
           }
-          return <img className="image active" src={image}></img>;
+          return (
+            <img
+              key={index}
+              className="image active"
+              src={image}
+              alt={`Trekking in the Himalayas ${index + 1}`}
+            ></img>
+          );
         })}
       </div>
 

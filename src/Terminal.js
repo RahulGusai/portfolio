@@ -3,7 +3,6 @@ import CommandProcessor from './CommandProcessor';
 import config from './config';
 import './Terminal.css';
 import ImageSlider from './ImageSlider';
-import { Icon } from 'semantic-ui-react';
 
 // Evaluated once: when reduced motion is requested we skip the typing
 // animation (and its sound) and render the hero instantly.
@@ -64,7 +63,7 @@ const Terminal = () => {
         setIsTyping(false);
       }
     }
-  }, [isTyping, welcomeMessageIndex]);
+  }, [isTyping, welcomeMessageIndex, welcomeMessage]);
 
   useEffect(() => {
     if (isTyping) {
@@ -398,9 +397,13 @@ const Terminal = () => {
 
         {autoCompleteOutput && (
           <div className="current-output-row">
-            {autoCompleteOutput.data.map((dataObject) => {
-              const { type, value, metaData } = dataObject;
-              return <div className="current-output-div">{value}</div>;
+            {autoCompleteOutput.data.map((dataObject, index) => {
+              const { value } = dataObject;
+              return (
+                <div key={index} className="current-output-div">
+                  {value}
+                </div>
+              );
             })}
           </div>
         )}
