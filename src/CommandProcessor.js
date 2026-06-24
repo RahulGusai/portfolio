@@ -171,7 +171,7 @@ class CommandProcessor {
           const usage = [
             { value: `Not sure how to proceed ?`, type: 'disclaimer' },
             {
-              value: `Enter "ls ~/skills" to view the skills or "ls ~/projects" to see projects.`,
+              value: `New here? Try "whoami", "projects", "skills", or "resume".`,
               type: 'disclaimer',
             },
           ];
@@ -191,6 +191,65 @@ class CommandProcessor {
           return {
             data: [],
           };
+        },
+        autoCompleteHandler: function (command, commandArg, dirsNavigated) {
+          return config.cmd_output_with_no_data;
+        },
+      },
+
+      whoami: {
+        description: 'Print a one-line identity.',
+        handler: function (commandArg, dirsNavigated) {
+          return {
+            data: [
+              {
+                value:
+                  'Rahul Gusai — AI engineer focused on agents, workflow automation, and production AI systems.',
+              },
+            ],
+            type: 'row',
+          };
+        },
+        autoCompleteHandler: function (command, commandArg, dirsNavigated) {
+          return config.cmd_output_with_no_data;
+        },
+      },
+
+      projects: {
+        description: 'List highlighted projects with links.',
+        handler: function (commandArg, dirsNavigated) {
+          return config.system_dirs.projects.output;
+        },
+        autoCompleteHandler: function (command, commandArg, dirsNavigated) {
+          return config.cmd_output_with_no_data;
+        },
+      },
+
+      skills: {
+        description: 'List skills grouped by area (AI/LLM, Backend, Infra).',
+        handler: function (commandArg, dirsNavigated) {
+          return config.skills_groups;
+        },
+        autoCompleteHandler: function (command, commandArg, dirsNavigated) {
+          return config.cmd_output_with_no_data;
+        },
+      },
+
+      contact: {
+        description: 'Show email and social links.',
+        handler: function (commandArg, dirsNavigated) {
+          return config.contact_lines;
+        },
+        autoCompleteHandler: function (command, commandArg, dirsNavigated) {
+          return config.cmd_output_with_no_data;
+        },
+      },
+
+      history: {
+        description: 'Print previously entered commands.',
+        handler: function (commandArg, dirsNavigated) {
+          // Rendered in Terminal.js, which owns the command-history state.
+          return config.cmd_output_with_no_data;
         },
         autoCompleteHandler: function (command, commandArg, dirsNavigated) {
           return config.cmd_output_with_no_data;

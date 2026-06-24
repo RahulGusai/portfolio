@@ -110,7 +110,18 @@ const Terminal = () => {
         const [commandName, commandArg] = event.target.value.split(' ');
 
         const commandObj = commandProcessor.getCommandObject(commandName);
-        const output = commandObj.handler(commandArg, dirsNavigated);
+        let output = commandObj.handler(commandArg, dirsNavigated);
+
+        if (commandName === 'history') {
+          const cmds = commandsHistory.commands;
+          output =
+            cmds.length === 0
+              ? { data: [{ value: 'No commands in history yet.' }], type: 'row' }
+              : {
+                  data: cmds.map((cmd, i) => ({ value: `${i + 1}  ${cmd}` })),
+                  type: 'column',
+                };
+        }
         const pathToCurrentDir =
           dirsNavigated.length > 0 ? `~/${dirsNavigated.join('/')}` : '~';
 
@@ -341,6 +352,14 @@ const Terminal = () => {
                         </div>
                       </div>
                     );
+                  }
+
+                  if (type === 'section-heading') {
+                    return <div className="section-heading">{value}</div>;
+                  }
+
+                  if (type === 'section-body') {
+                    return <div className="section-body">{value}</div>;
                   }
 
                   if (type === 'disclaimer') {
