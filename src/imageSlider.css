@@ -14,7 +14,7 @@
   height: 400px;
   border-radius: 10px;
   display: none;
-  box-shadow: 0px 0px 5px 1px #005b44;
+  box-shadow: 0px 0px 6px 1px var(--color-border);
 }
 
 .slider .active {

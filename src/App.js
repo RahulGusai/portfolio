@@ -18,28 +18,28 @@ function App() {
             url="https://www.linkedin.com/in/rahulgusai/"
             label="new"
             style={{ height: 25, width: 25 }}
-            bgColor="#212121"
+            bgColor="#0d1117"
           />
           <SocialIcon
             url="https://www.instagram.com/raahgirahul/"
             label="new"
             style={{ height: 25, width: 25 }}
-            bgColor="#212121"
+            bgColor="#0d1117"
           />
           <SocialIcon
             url="https://github.com/RahulGusai"
             style={{ height: 25, width: 25 }}
-            bgColor="#212121"
+            bgColor="#0d1117"
           />
           <SocialIcon
             url="https://stackoverflow.com/users/6749197/rahul-gusai"
             style={{ height: 25, width: 25 }}
-            bgColor="#212121"
+            bgColor="#0d1117"
           />
           <SocialIcon
             url="https://drive.google.com/file/d/1F_Y8uAUUhBJojrX7wEIiyFATdyxChEgl/view"
             style={{ height: 25, width: 25 }}
-            bgColor="#212121"
+            bgColor="#0d1117"
           />
         </div>
         <div className="description">Crafted with ❤️</div>
