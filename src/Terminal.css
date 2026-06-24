@@ -92,6 +92,7 @@
 }
 
 .welcome-message {
+  flex: 1;
   color: var(--color-fg);
 }
 
@@ -106,20 +107,33 @@
 }
 
 .welcome-message .cursor {
-  display: inline;
-  animation: blink 0.1s infinite alternate;
+  display: inline-block;
+  width: 0.6ch;
+  height: 1.05em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background-color: var(--color-accent);
 }
 
-.inactive {
-  display: none;
+/* solid while typing; calm blink only once it settles at the prompt */
+.welcome-message .cursor.blink {
+  animation: blink 1s steps(1, end) infinite;
 }
 
 @keyframes blink {
-  from {
-    opacity: 1; /* Visible */
+  0%,
+  50% {
+    opacity: 1;
   }
-  to {
-    opacity: 0; /* Invisible */
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome-message .cursor.blink {
+    animation: none;
   }
 }
 

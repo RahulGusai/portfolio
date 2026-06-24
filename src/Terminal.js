@@ -1,9 +1,16 @@
-import { Fragment, useEffect, useRef, useState, useCallback } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import CommandProcessor from './CommandProcessor';
 import config from './config';
 import './Terminal.css';
 import ImageSlider from './ImageSlider';
 import { Icon } from 'semantic-ui-react';
+
+// Evaluated once: when reduced motion is requested we skip the typing
+// animation (and its sound) and render the hero instantly.
+const prefersReducedMotion =
+  typeof window !== 'undefined' &&
+  typeof window.matchMedia === 'function' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const Terminal = () => {
   const [isTyping, setIsTyping] = useState(false);
@@ -28,21 +35,30 @@ const Terminal = () => {
   );
 
   const [welcomeMessageIndex, setWelcomeMessageIndex] = useState(0);
-  const welcomeMessage = `Hi, I'm Rahul.\nYou're here because you need something built. But not just anything.You need something excellent, not just someone's idea of a minimum viable product.\nI do not do things small and I do not do things halfway. If you or your company need a sure bet, my inbox is open. :)\nYou can navigate through this terminal to know more about me. help command will list all the available commands.`;
+  const welcomeMessage = `Hi, I'm Rahul.\nI build production-grade AI agents and automated workflows that actually ship and hold up once real users show up. 7+ years engineering; now focused on applied AI.\n\nType \`help\` to look around. Try \`projects\`, \`resume\`, or \`whoami\`.`;
 
   useEffect(() => {
+    // Reduced motion: render the whole hero at once, no typing, no sound.
+    if (prefersReducedMotion) {
+      welcomeMsgElem.current.textContent = welcomeMessage;
+      welcomeMsgCursorElem.current.className = 'cursor blink';
+      return;
+    }
+
     if (welcomeMessageIndex < welcomeMessage.length) {
       if (!isTyping) setIsTyping(true);
 
       if (welcomeMessageIndex === 0) {
-        welcomeMsgElem.current.innerHTML = '';
+        welcomeMsgElem.current.textContent = '';
       }
-      welcomeMsgElem.current.innerHTML +=
+      welcomeMsgElem.current.textContent +=
         welcomeMessage.charAt(welcomeMessageIndex);
-      const updatedWelcomeMessageIndex = welcomeMessageIndex + 1;
-      setTimeout(() => setWelcomeMessageIndex(updatedWelcomeMessageIndex), 60);
+      const next = welcomeMessageIndex + 1;
+      const timerId = setTimeout(() => setWelcomeMessageIndex(next), 18);
+      return () => clearTimeout(timerId);
     } else {
-      welcomeMsgCursorElem.current.className = 'inactive';
+      // Typing finished: leave a calm blinking block cursor at the prompt.
+      welcomeMsgCursorElem.current.className = 'cursor blink';
 
       if (isTyping) {
         setIsTyping(false);
@@ -52,28 +68,16 @@ const Terminal = () => {
 
   useEffect(() => {
     if (isTyping) {
-      audioElem.current.play();
+      // play() can reject if the browser blocks autoplay before a gesture.
+      const playPromise = audioElem.current.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {});
+      }
     } else {
       audioElem.current.pause();
       audioElem.current.currentTime = 0;
     }
   }, [isTyping]);
-
-  const printAnimatedOutput = useCallback((animatedDiv, output) => {
-    if (output.length === 0) {
-      return;
-    }
-
-    const currentValue = animatedDiv.innerHTML;
-
-    if (!currentValue) {
-      animatedDiv.innerHTML += output[0];
-      setTimeout(() => printAnimatedOutput(animatedDiv, output), 50);
-    } else if (currentValue.length < output.length) {
-      animatedDiv.innerHTML += output[currentValue.length];
-      setTimeout(() => printAnimatedOutput(animatedDiv, output), 50);
-    }
-  }, []);
 
   useEffect(() => {
     scrollToBottom();
@@ -81,7 +85,10 @@ const Terminal = () => {
 
   const restartAudio = () => {
     audioElem.current.currentTime = 0;
-    audioElem.current.play();
+    const playPromise = audioElem.current.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(() => {});
+    }
   };
 
   const clearAnimatedDivs = () => {
@@ -211,10 +218,7 @@ const Terminal = () => {
         <div className="terminal-header">
           <div className="welcome-message">
             <pre className="welcome-message-text" ref={welcomeMsgElem}></pre>
-            <span className="cursor" ref={welcomeMsgCursorElem}>
-              {' '}
-              |
-            </span>
+            <span className="cursor" ref={welcomeMsgCursorElem}></span>
             {Array.from({ length: 2 }).map(() => (
               <br></br>
             ))}
