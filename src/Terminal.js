@@ -354,6 +354,10 @@ const Terminal = () => {
                     );
                   }
 
+                  if (type === 'resume-name') {
+                    return <div className="resume-name">{value}</div>;
+                  }
+
                   if (type === 'section-heading') {
                     return <div className="section-heading">{value}</div>;
                   }

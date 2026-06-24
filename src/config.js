@@ -91,6 +91,53 @@ const contactLines = {
   margin: true,
 };
 
+const resumeSections = {
+  data: [
+    { value: 'Rahul Gusai', type: 'resume-name' },
+    { value: 'summary', type: 'section-heading' },
+    {
+      value:
+        'AI engineer who builds production-grade agents and automated workflows — systems that ship and keep working with real users, not demos. 7+ years in software engineering, now focused on applied AI.',
+      type: 'section-body',
+    },
+    { value: 'focus', type: 'section-heading' },
+    {
+      value:
+        'AI agents that complete multi-step tasks; RAG over real documents; workflow automation that removes manual work; and the backend, data pipelines, and orchestration that keep agents reliable.',
+      type: 'section-body',
+    },
+    { value: 'selected work', type: 'section-heading' },
+    {
+      value: `Crewline — autonomous AI engineering crew: agents triage tickets, write code, review, open PRs.
+RAG Knowledge Assistant — cited retrieval and Q&A across long documents.
+BrandPilot — autonomous marketing pipeline: research → strategy → content.
+Capila — AI systems for a healthcare product (client work).`,
+      type: 'section-body',
+    },
+    { value: 'background', type: 'section-heading' },
+    {
+      value:
+        '7+ years in software engineering — backend, distributed systems, and infra across product companies — now focused full-time on AI.',
+      type: 'section-body',
+    },
+    { value: 'stack', type: 'section-heading' },
+    {
+      value: `AI/LLM — Python, LLM orchestration, agents, RAG, vector DBs (Pinecone, pgvector), MCP, LangGraph, LangChain/LlamaIndex, OpenAI + Anthropic (Claude).
+Backend — FastAPI, Django, async processing, APIs, data modeling, Postgres/MySQL, Redis, Celery.
+Infra — Docker, Kubernetes, CI/CD.`,
+      type: 'section-body',
+    },
+    { value: 'contact', type: 'section-heading' },
+    {
+      value:
+        'rgusai97@gmail.com · github.com/RahulGusai · linkedin.com/in/rahulgusai',
+      type: 'section-body',
+    },
+  ],
+  type: 'column',
+  margin: true,
+};
+
 const config = {
   DEFAULT_PROMPT_LABEL: 'rahul@portfolio:',
 
@@ -99,6 +146,7 @@ const config = {
   // exposed for the commands that reuse them
   skills_groups: skillsGroups,
   contact_lines: contactLines,
+  resume_sections: resumeSections,
 
   system_dirs: {
     home: {
@@ -120,19 +168,7 @@ const config = {
     },
     resume: {
       directories: [],
-      output: {
-        data: [
-          {
-            value: 'resume.pdf',
-            type: 'link',
-            metaData: {
-              address:
-                'https://drive.google.com/file/d/1F_Y8uAUUhBJojrX7wEIiyFATdyxChEgl/view',
-            },
-          },
-        ],
-        type: 'row',
-      },
+      output: resumeSections,
     },
     'contact-info': {
       directories: [],

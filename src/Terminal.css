@@ -208,6 +208,35 @@
   color: var(--color-muted);
 }
 
+.resume-name {
+  color: var(--color-heading);
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.section-heading {
+  color: var(--color-accent);
+  font-size: var(--fs-h2);
+  font-weight: 500;
+  margin-top: 12px;
+}
+
+.section-heading:first-child {
+  margin-top: 0;
+}
+
+.section-heading::before {
+  content: '> ';
+}
+
+.section-body {
+  color: var(--color-fg);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  white-space: pre-line;
+}
+
 .meter-container {
   display: flex;
   width: 200px;

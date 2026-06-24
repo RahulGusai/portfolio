@@ -5,8 +5,6 @@ import 'react-social-icons/linkedin';
 import 'react-social-icons/instagram';
 import 'react-social-icons/github';
 import 'react-social-icons/stackoverflow';
-import 'react-social-icons/google';
-import 'react-social-icons/email';
 
 function App() {
   return (
@@ -33,11 +31,6 @@ function App() {
           />
           <SocialIcon
             url="https://stackoverflow.com/users/6749197/rahul-gusai"
-            style={{ height: 25, width: 25 }}
-            bgColor="#0d1117"
-          />
-          <SocialIcon
-            url="https://drive.google.com/file/d/1F_Y8uAUUhBJojrX7wEIiyFATdyxChEgl/view"
             style={{ height: 25, width: 25 }}
             bgColor="#0d1117"
           />

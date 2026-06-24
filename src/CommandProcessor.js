@@ -245,6 +245,16 @@ class CommandProcessor {
         },
       },
 
+      resume: {
+        description: 'Render the resume in the terminal.',
+        handler: function (commandArg, dirsNavigated) {
+          return config.resume_sections;
+        },
+        autoCompleteHandler: function (command, commandArg, dirsNavigated) {
+          return config.cmd_output_with_no_data;
+        },
+      },
+
       history: {
         description: 'Print previously entered commands.',
         handler: function (commandArg, dirsNavigated) {
